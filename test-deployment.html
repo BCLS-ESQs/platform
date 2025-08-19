@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESQs Platform - Deployment Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-item { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>🔍 ESQs Platform Deployment Test</h1>
+    <p>This file was created to test if GitHub Pages deployment is working.</p>
+    
+    <div class="test-item success">
+        <h3>✅ Test File Created</h3>
+        <p>If you can see this file, GitHub Pages is working.</p>
+        <p>Timestamp: <span id="timestamp"></span></p>
+    </div>
+    
+    <div class="test-item success">
+        <h3>✅ Changes Should Be Visible</h3>
+        <p>If you see this test file, the main platform should also be updated.</p>
+    </div>
+    
+    <div class="test-item">
+        <h3>🔗 Test Links</h3>
+        <p><a href="index.html">Main Platform</a></p>
+        <p><a href="travis.html">Travis Workspace</a></p>
+        <p><a href="jessica.html">Jessica Workspace</a></p>
+    </div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>
