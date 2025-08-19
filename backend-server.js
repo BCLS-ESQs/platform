@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 
 const app = express();
 const PORT = 3000;
@@ -18,7 +18,7 @@ let db;
 // Initialize database connection
 function initDatabase() {
     try {
-        db = new sqlite3.Database(dbPath);
+        db = new Database(dbPath);
         console.log('✅ Connected to LAWMatrix database');
     } catch (error) {
         console.error('❌ Database connection failed:', error);
