@@ -1,0 +1,42 @@
+services:
+  # Backend Server - Practice Panther & F: Drive Access
+  - type: web
+    name: esqs-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node backend-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /api/health
+
+  # AI-Synthia Bridge - Code Verification
+  - type: web
+    name: esqs-ai-bridge
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node ai-synthia-bridge.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+    healthCheckPath: /ai/status
+
+  # Synthia Integration - Analysis Engine
+  - type: web
+    name: esqs-synthia
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node synthia-integration.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3002
+    healthCheckPath: /synthia/health
