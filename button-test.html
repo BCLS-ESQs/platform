@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test - ESQs Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #28a745;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Button Functionality Test</h1>
+    <p>This page tests if the basic button functionality is working in your browser.</p>
+    
+    <div>
+        <button class="test-button" onclick="testFunction()">Test Basic Function</button>
+        <button class="test-button" onclick="testAlert()">Test Alert</button>
+        <button class="test-button" onclick="testConsole()">Test Console</button>
+        <button class="test-button" onclick="testLocalStorage()">Test Local Storage</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function testFunction() {
+            const result = document.createElement('div');
+            result.className = 'result';
+            result.innerHTML = '<strong>✅ Basic Function Test:</strong> Function executed successfully!';
+            document.getElementById('results').appendChild(result);
+        }
+        
+        function testAlert() {
+            alert('Alert test successful! Buttons are working.');
+            const result = document.createElement('div');
+            result.className = 'result';
+            result.innerHTML = '<strong>✅ Alert Test:</strong> Alert displayed successfully!';
+            document.getElementById('results').appendChild(result);
+        }
+        
+        function testConsole() {
+            console.log('Console test successful!');
+            const result = document.createElement('div');
+            result.className = 'result';
+            result.innerHTML = '<strong>✅ Console Test:</strong> Check browser console for log message!';
+            document.getElementById('results').appendChild(result);
+        }
+        
+        function testLocalStorage() {
+            try {
+                localStorage.setItem('test', 'working');
+                const value = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                const result = document.createElement('div');
+                result.className = 'result';
+                result.innerHTML = `<strong>✅ Local Storage Test:</strong> Local storage is working! Test value: ${value}`;
+                document.getElementById('results').appendChild(result);
+            } catch (error) {
+                const result = document.createElement('div');
+                result.className = 'result error';
+                result.innerHTML = `<strong>❌ Local Storage Test:</strong> Failed: ${error.message}`;
+                document.getElementById('results').appendChild(result);
+            }
+        }
+        
+        // Auto-test on page load
+        window.addEventListener('load', function() {
+            console.log('🚀 Button test page loaded successfully');
+            console.log('✅ All basic browser functions should work');
+            
+            const result = document.createElement('div');
+            result.className = 'result';
+            result.innerHTML = '<strong>✅ Page Load Test:</strong> Page loaded successfully! All tests ready.';
+            document.getElementById('results').appendChild(result);
+        });
+    </script>
+</body>
+</html>

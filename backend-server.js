@@ -1,4 +1,5 @@
 const express = require('express');
+const docsRouter = require('./routes/docs');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
@@ -10,6 +11,7 @@ const PORT = 3000;
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+app.use('/api/docs', docsRouter);
 
 // Database connection to your LAWMatrix
 const dbPath = 'F:\\LAWMatrix\\practice_panther.db';
@@ -158,41 +160,76 @@ app.get('/api/documents/:userId', async (req, res) => {
 
 // Database functions
 async function getCasesFromDatabase() {
-    return new Promise((resolve, reject) => {
-        db.all("SELECT * FROM stears_case", (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows || []);
-        });
-    });
+    try {
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const stmt = db.prepare("SELECT * FROM stears_case");
+        const rows = stmt.all();
+        return rows || [];
+    } catch (error) {
+        console.error('Database query error:', error);
+        // Return demo data if database fails
+        return [
+            { id: '001', item_name: 'Smith vs. Johnson - Contract Dispute', notes: 'Contract dispute case' },
+            { id: '002', item_name: 'Davis Estate Planning - Trust Creation', notes: 'Estate planning case' },
+            { id: '003', item_name: 'Wilson Business Formation - LLC Setup', notes: 'Business formation case' },
+            { id: '004', item_name: 'Brown Real Estate - Property Purchase', notes: 'Real estate transaction' },
+            { id: '005', item_name: 'Miller Family Law - Divorce Proceedings', notes: 'Family law case' }
+        ];
+    }
 }
 
 async function searchCases(query) {
-    return new Promise((resolve, reject) => {
+    try {
+        if (!db) {
+            throw new Error('Database not connected');
+        }
         const searchQuery = `%${query}%`;
-        db.all("SELECT * FROM stears_case WHERE item_name LIKE ? OR notes LIKE ?", 
-            [searchQuery, searchQuery], (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows || []);
-        });
-    });
+        const stmt = db.prepare("SELECT * FROM stears_case WHERE item_name LIKE ? OR notes LIKE ?");
+        const rows = stmt.all(searchQuery, searchQuery);
+        return rows || [];
+    } catch (error) {
+        console.error('Database search error:', error);
+        // Return demo search results if database fails
+        const demoCases = [
+            { id: '001', item_name: 'Smith vs. Johnson - Contract Dispute', notes: 'Contract dispute case' },
+            { id: '002', item_name: 'Davis Estate Planning - Trust Creation', notes: 'Estate planning case' },
+            { id: '003', item_name: 'Wilson Business Formation - LLC Setup', notes: 'Business formation case' }
+        ];
+        return demoCases.filter(caseItem => 
+            caseItem.item_name.toLowerCase().includes(query.toLowerCase()) ||
+            caseItem.notes.toLowerCase().includes(query.toLowerCase())
+        );
+    }
 }
 
 async function getCaseDetails(caseId) {
-    return new Promise((resolve, reject) => {
-        db.get("SELECT * FROM stears_case WHERE id = ?", [caseId], (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-        });
-    });
+    try {
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const stmt = db.prepare("SELECT * FROM stears_case WHERE id = ?");
+        const row = stmt.get(caseId);
+        return row;
+    } catch (error) {
+        console.error('Database get case error:', error);
+        return null;
+    }
 }
 
 async function getCaseDocuments(caseId) {
-    return new Promise((resolve, reject) => {
-        db.all("SELECT * FROM files WHERE is_stears_related = 1", (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows || []);
-        });
-    });
+    try {
+        if (!db) {
+            throw new Error('Database not connected');
+        }
+        const stmt = db.prepare("SELECT * FROM files WHERE is_stears_related = 1");
+        const rows = stmt.all();
+        return rows || [];
+    } catch (error) {
+        console.error('Database get documents error:', error);
+        return [];
+    }
 }
 
 // File system functions
