@@ -90,6 +90,17 @@ app.get('/api/practice-panther/cases/:caseId/documents', async (req, res) => {
 });
 
 // ========================================
+// Health check route for cloud deployment
+app.get('/', (req, res) => {
+    res.json({
+        status: 'online',
+        service: 'ESQs Platform Backend',
+        version: '1.0.0',
+        environment: process.env.NODE_ENV || 'development',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // F: DRIVE ACCESS ENDPOINTS
 // ========================================
 
@@ -344,3 +355,4 @@ app.get('/api/health', (req, res) => {
 
 console.log('🚀 ESQs Platform Backend Server loaded successfully!');
 console.log('📁 Ready to connect online platforms to your local data!');
+
