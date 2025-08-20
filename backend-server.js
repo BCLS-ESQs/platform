@@ -6,7 +6,7 @@ const path = require('path');
 const Database = require('better-sqlite3');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -34,7 +34,7 @@ const PRACTICE_PANTHER_PATH = 'F:\\Dropbox\\Dropbox\\PracticePanther';
 const F_DRIVE_PATH = 'F:\\';
 
 // Initialize server
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 ESQs Platform Backend Server running on port ${PORT}`);
     console.log(`🌐 Access from: http://localhost:${PORT}`);
     console.log(`📁 Connected to F: Drive: ${F_DRIVE_PATH}`);
