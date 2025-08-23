@@ -1,0 +1,55 @@
+# FastAPI Legal Research Backend Requirements
+# For ESQs Platform Integration
+
+# FastAPI and web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# HTTP client for ESQs platform integration
+httpx==0.25.2
+
+# Data validation and serialization
+pydantic==2.5.0
+
+# Database and ORM
+sqlalchemy==2.0.23
+
+# Legal research and NLP
+spacy==3.7.2
+nltk==3.8.1
+transformers==4.35.2
+
+# Citation processing
+pyap==0.3.1
+python-dateutil==2.8.2
+
+# External API integrations
+requests==2.31.0
+aiohttp==3.9.1
+
+# Text processing and analysis
+beautifulsoup4==4.12.2
+lxml==4.9.3
+pypdf2==3.0.1
+python-docx==1.1.0
+
+# Environment and configuration
+python-dotenv==1.0.0
+pydantic-settings==2.1.0
+
+# Logging and monitoring
+structlog==23.2.0
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0
+
+# Security
+cryptography==41.0.8
+python-jose==3.3.0
+
+# Cache and performance
+redis==5.0.1
+aioredis==2.0.1

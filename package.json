@@ -1,0 +1,33 @@
+{
+  "name": "esqs-platform-backend",
+  "version": "1.0.0",
+  "description": "ESQs Platform Backend Server - Connects online platforms to local Practice Panther and F: drive data",
+  "main": "backend-server.js",
+  "scripts": {
+    "start": "node backend-server.js",
+    "dev": "nodemon backend-server.js",
+    "install-deps": "npm install",
+    "setup": "npm install && npm start"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "esqs",
+    "legal",
+    "practice-panther",
+    "backend",
+    "api"
+  ],
+  "author": "ESQs Platform",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
