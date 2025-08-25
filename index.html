@@ -1,0 +1,1080 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESQs AI Legal Platform - Enhanced v4.5.2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 350px;
+            grid-template-rows: 60px 1fr 120px;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .user-info h3 {
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .header-title {
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-title h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .system-access {
+            display: flex;
+            gap: 10px;
+        }
+
+        .access-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pp-access {
+            background: #28a745;
+            color: white;
+        }
+
+        .f-access {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .settings-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .access-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Left Sidebar - Chat History */
+        .left-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header h3 {
+            color: #2c3e50;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-chat-btn:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .chat-history {
+            padding: 10px;
+        }
+
+        .chat-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .chat-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+            border-left-color: #007bff;
+        }
+
+        .chat-item.active {
+            background: rgba(0, 123, 255, 0.15);
+            border-left-color: #007bff;
+        }
+
+        .chat-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .chat-preview {
+            font-size: 12px;
+            color: #7f8c8d;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .chat-time {
+            font-size: 11px;
+            color: #bdc3c7;
+            margin-top: 4px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-title h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .content-title p {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid #28a745;
+            border-radius: 20px;
+            color: #28a745;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user .message-avatar {
+            background: #007bff;
+            color: white;
+        }
+
+        .ai .message-avatar {
+            background: #28a745;
+            color: white;
+        }
+
+        .message-content {
+            flex: 1;
+            max-width: 70%;
+        }
+
+        .message-bubble {
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .user .message-bubble {
+            background: #007bff;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai .message-bubble {
+            background: white;
+            color: #2c3e50;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 6px;
+            text-align: right;
+        }
+
+        .user .message-time {
+            text-align: left;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .widget {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .widget-header {
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .widget-header h3 {
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .widget-content {
+            padding: 16px;
+        }
+
+        /* Recent Files Widget */
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .file-icon.pdf { background: #dc3545; }
+        .file-icon.doc { background: #0066cc; }
+        .file-icon.img { background: #28a745; }
+        .file-icon.code { background: #6f42c1; }
+
+        .file-info h4 {
+            font-size: 12px;
+            color: #2c3e50;
+            margin-bottom: 2px;
+        }
+
+        .file-info p {
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+
+        /* Calendar Widget */
+        .calendar {
+            font-size: 12px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        .calendar-day.today {
+            background: #007bff;
+            color: white;
+        }
+
+        .calendar-day.event {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        /* Chat Input */
+        .chat-input-area {
+            grid-column: 1 / -1;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-height: 44px;
+            max-height: 120px;
+            padding: 12px 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 22px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .file-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .send-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* File Upload Drop Zone */
+        .drop-zone {
+            border: 2px dashed #007bff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(0, 123, 255, 0.05);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .drop-zone.active {
+            display: block;
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.05);
+        }
+
+        .drop-zone.drag-over {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+            transform: scale(1.02);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 250px 1fr 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 60px 1fr 120px;
+            }
+            
+            .left-sidebar,
+            .right-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-profile">
+                <div class="profile-avatar">EB</div>
+                <div class="user-info">
+                    <h3>ESQs Legal Team</h3>
+                    <p>Premium Account</p>
+                </div>
+            </div>
+            
+            <div class="header-title">
+                <h1> ESQs AI Legal Platform</h1>
+                <p>Enhanced v4.5.2 - FastAPI Integration Ready</p>
+            </div>
+            
+            <div class="system-access">
+                <button class="access-btn pp-access">
+                     Practice Panther
+                </button>
+                <button class="access-btn f-access">
+                     F: Drive Access
+                </button>
+                <button class="access-btn settings-btn">
+                     Settings
+                </button>
+            </div>
+        </header>
+
+        <!-- Left Sidebar - Chat History -->
+        <aside class="left-sidebar">
+            <div class="sidebar-header">
+                <h3> Chat History</h3>
+                <button class="new-chat-btn">+ New Conversation</button>
+            </div>
+            
+            <div class="chat-history">
+                <div class="chat-item active">
+                    <div class="chat-title">Contract Review - Johnson Case</div>
+                    <div class="chat-preview">Reviewed employment contract terms and identified potential compliance issues...</div>
+                    <div class="chat-time">2 hours ago</div>
+                </div>
+                
+                <div class="chat-item">
+                    <div class="chat-title">Legal Research - IP Law</div>
+                    <div class="chat-preview">Researched trademark infringement precedents for tech startup case...</div>
+                    <div class="chat-time">Yesterday</div>
+                </div>
+                
+                <div class="chat-item">
+                    <div class="chat-title">Document Generation</div>
+                    <div class="chat-preview">Generated NDA template with custom clauses for client meeting...</div>
+                    <div class="chat-time">2 days ago</div>
+                </div>
+                
+                <div class="chat-item">
+                    <div class="chat-title">Case Strategy Session</div>
+                    <div class="chat-preview">Analyzed litigation strategy for personal injury case with medical evidence...</div>
+                    <div class="chat-time">3 days ago</div>
+                </div>
+                
+                <div class="chat-item">
+                    <div class="chat-title">Compliance Check</div>
+                    <div class="chat-preview">Verified regulatory compliance for corporate merger documentation...</div>
+                    <div class="chat-time">1 week ago</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-header">
+                <div class="content-title">
+                    <h2>AI Legal Assistant</h2>
+                    <p>Ready to help with legal research, document review, and case strategy</p>
+                </div>
+                <div class="ai-status">
+                    <div class="status-dot"></div>
+                    AI Online & Ready
+                </div>
+            </div>
+            
+            <div class="drop-zone" id="dropZone">
+                <h3> Drop Files Here</h3>
+                <p>Support for documents, images, PDFs, and code files<br>
+                Advanced OCR for handwritten documents</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            Welcome to ESQs AI Legal Platform! I'm your AI assistant, ready to help with:
+                            <br><br>
+                             <strong>Legal Research</strong> - Case law, statutes, regulations<br>
+                             <strong>Document Review</strong> - Contracts, briefs, filings<br>
+                             <strong>Case Strategy</strong> - Analysis and recommendations<br>
+                             <strong>Document Generation</strong> - Templates and custom documents<br>
+                             <strong>System Integration</strong> - Practice Panther & F: Drive access<br>
+                             <strong>File Processing</strong> - Universal file reader with OCR<br>
+                            <br>
+                            You can also drag and drop files directly into the chat for analysis!
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <!-- Recent Files Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3> Recent Files</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="file-item">
+                        <div class="file-icon pdf">PDF</div>
+                        <div class="file-info">
+                            <h4>Employment_Contract_v2.pdf</h4>
+                            <p>Modified 2 hours ago</p>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item">
+                        <div class="file-icon doc">DOC</div>
+                        <div class="file-info">
+                            <h4>NDA_Template_Tech.docx</h4>
+                            <p>Created yesterday</p>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item">
+                        <div class="file-icon img">IMG</div>
+                        <div class="file-info">
+                            <h4>Evidence_Photo_Case123.jpg</h4>
+                            <p>Uploaded 2 days ago</p>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item">
+                        <div class="file-icon code">JS</div>
+                        <div class="file-info">
+                            <h4>legal-research-api.js</h4>
+                            <p>Modified 3 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3> Calendar</h3>
+                </div>
+                <div class="widget-content">
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <button class="calendar-nav"></button>
+                            <span>August 2025</span>
+                            <button class="calendar-nav"></button>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day">S</div>
+                            <div class="calendar-day">M</div>
+                            <div class="calendar-day">T</div>
+                            <div class="calendar-day">W</div>
+                            <div class="calendar-day">T</div>
+                            <div class="calendar-day">F</div>
+                            <div class="calendar-day">S</div>
+                            
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day"></div>
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day">10</div>
+                            
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day">22</div>
+                            <div class="calendar-day">23</div>
+                            <div class="calendar-day">24</div>
+                            
+                            <div class="calendar-day today">25</div>
+                            <div class="calendar-day event">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day event">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day">30</div>
+                            <div class="calendar-day">31</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Types Widget -->
+            <div class="widget">
+                <div class="widget-header">
+                    <h3> File Types Produced</h3>
+                </div>
+                <div class="widget-content">
+                    <div style="font-size: 12px; line-height: 1.6;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span> Legal Documents</span>
+                            <strong>247</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span> Case Reports</span>
+                            <strong>89</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span> Research Notes</span>
+                            <strong>156</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span> Legal Briefs</span>
+                            <strong>67</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <span> Evidence Files</span>
+                            <strong>134</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+            <div class="chat-input-container">
+                <textarea 
+                    class="chat-input" 
+                    id="chatInput"
+                    placeholder="Ask me anything about legal research, document review, case strategy... or drag & drop files for analysis"
+                    rows="1"
+                ></textarea>
+                <div class="input-actions">
+                    <button class="action-btn file-btn" title="Upload File"></button>
+                    <button class="action-btn send-btn" id="sendBtn" title="Send Message"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatMessages = document.getElementById('chatMessages');
+        const dropZone = document.getElementById('dropZone');
+
+        // Auto-resize textarea
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.addEventListener(eventName, preventDefaults, false);
+            chatMessages.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            document.addEventListener(eventName, () => {
+                dropZone.classList.add('active');
+                dropZone.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            document.addEventListener(eventName, () => {
+                dropZone.classList.remove('active');
+                dropZone.classList.remove('drag-over');
+            }, false);
+        });
+
+        document.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            
+            Array.from(files).forEach(file => {
+                addMessage('user',  Uploaded:  ());
+                processFileForAI(file);
+            });
+        }
+
+        function processFileForAI(file) {
+            setTimeout(() => {
+                const fileType = detectFileType(file);
+                let response = I've received your  file "". ;
+                
+                if (file.type.startsWith('image/')) {
+                    response += "I'll analyze this image and extract any text using OCR. ";
+                } else if (file.type === 'application/pdf') {
+                    response += "I'll review this PDF document and provide insights on its legal content. ";
+                } else if (file.name.match(/\.(docx?|xlsx?|pptx?)$/i)) {
+                    response += "I can help analyze this Microsoft Office document once processed. ";
+                } else if (isCodeFile(file)) {
+                    response += "I'll review this code file for legal compliance and security considerations. ";
+                }
+                
+                response += "What specific analysis would you like me to perform?";
+                addMessage('ai', response);
+            }, 1000);
+        }
+
+        function detectFileType(file) {
+            if (file.type.startsWith('image/')) return 'image';
+            if (file.type === 'application/pdf') return 'PDF';
+            if (file.name.match(/\.(docx?|xlsx?|pptx?)$/i)) return 'Office document';
+            if (isCodeFile(file)) return 'code';
+            return 'document';
+        }
+
+        function isCodeFile(file) {
+            return /\.(js|py|java|json|txt|md|ts|cpp|cs|rb|go|csv|log|xml|html|css)$/i.test(file.name);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Send message functionality
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            addMessage('user', message);
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            // Simulate AI response
+            setTimeout(() => {
+                const responses = [
+                    "I'll help you with that legal research. Let me analyze the relevant case law and statutes...",
+                    "I've reviewed the document. Here are the key findings and recommendations...",
+                    "Based on my analysis of similar cases, here's the strategic approach I recommend...",
+                    "I've generated the requested document template with the specifications you provided...",
+                    "Let me access the Practice Panther database to retrieve that case information...",
+                    "I'll search the F: drive for related documents and cross-reference with your case files...",
+                    "Processing your request through the legal research API integration..."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessage('ai', randomResponse);
+            }, 1500);
+        }
+
+        function addMessage(sender, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = message ;
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            messageDiv.innerHTML = 
+                <div class="message-avatar"></div>
+                <div class="message-content">
+                    <div class="message-bubble"></div>
+                    <div class="message-time"></div>
+                </div>
+            ;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // System access buttons
+        document.querySelector('.pp-access').addEventListener('click', function() {
+            addMessage('ai', ' Connecting to Practice Panther...  Connected! I can now access your case management data, client information, calendar events, and billing records. How can I help you with your Practice Panther data?');
+        });
+
+        document.querySelector('.f-access').addEventListener('click', function() {
+            addMessage('ai', ' Accessing F: Drive...  Connected! I can now search and retrieve documents from your local file system, including case files, templates, and archived documents. What would you like me to find?');
+        });
+
+        document.querySelector('.settings-btn').addEventListener('click', function() {
+            addMessage('ai', ' Opening UI preferences... You can customize: Interface layout, Theme (light/dark), Notification settings, Integration preferences, File processing options, and AI response style. What would you like to adjust?');
+        });
+
+        // File upload simulation
+        document.querySelector('.file-btn').addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.js,.py,.java,.json,.md';
+            input.onchange = function(e) {
+                handleFiles(e.target.files);
+            };
+            input.click();
+        });
+
+        // Chat history navigation
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelector('.chat-item.active')?.classList.remove('active');
+                this.classList.add('active');
+                
+                const title = this.querySelector('.chat-title').textContent;
+                addMessage('ai',  Loading conversation: "". Here's where we left off in our discussion... I have the full context of our previous work on this matter.);
+            });
+        });
+
+        // New chat button
+        document.querySelector('.new-chat-btn').addEventListener('click', function() {
+            chatMessages.innerHTML = 
+                <div class="message ai">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            Starting a new conversation! I'm ready to help with any legal matters, document analysis, research, or case strategy. What can I assist you with today?
+                        </div>
+                        <div class="message-time">Just now</div>
+                    </div>
+                </div>
+            ;
+        });
+
+        // Calendar interaction
+        document.querySelectorAll('.calendar-day').forEach(day => {
+            day.addEventListener('click', function() {
+                if (this.textContent && this.textContent.trim()) {
+                    const date = this.textContent.trim();
+                    const hasEvents = this.classList.contains('event');
+                    addMessage('ai',  Checking your schedule for August , 2025... );
+                }
+            });
+        });
+
+        // File item clicks
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const fileName = this.querySelector('h4').textContent;
+                addMessage('ai',  Opening file: "". I can analyze this document for legal compliance, extract key terms, summarize content, or help with revisions. What would you like me to focus on?);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+services:
+  # Backend Server - Practice Panther & F: Drive Access
+  - type: web
+    name: esqs-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node backend-server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/health
+
+  # Legal Research API - FastAPI Backend
+  - type: web
+    name: esqs-legal-research
+    runtime: python
+    plan: free
+    buildCommand: pip install -r legal-research-requirements.txt
+    startCommand: python legal-research-fastapi-main.py
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: PORT
+        value: 10001
+    healthCheckPath: /
+
+  # AI-Synthia Bridge - Code Verification
+  - type: web
+    name: esqs-ai-bridge
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node ai-synthia-bridge.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10002
+    healthCheckPath: /ai/status
+
+  # Synthia Integration - Analysis Engine
+  - type: web
+    name: esqs-synthia
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node synthia-integration.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10003
+    healthCheckPath: /synthia/health
