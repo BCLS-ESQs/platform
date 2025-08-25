@@ -1,4 +1,4 @@
-﻿#  ESQs AI Legal Platform - Render Deployment Guide
+#  ESQs-Platform-Enhanced-v4-5-2 - Render Deployment Guide
 
 ## Your Platform is Ready! 
 
@@ -17,7 +17,8 @@
 - Click **"New"**  **"Blueprint"**
 - Connect repository: BCLS-ESQs/platform
 - Select branch: master
-- Render will auto-detect ender.yaml
+- Render will auto-detect 
+ender.yaml
 
 ### 3. Services That Will Deploy:
 1. **esqs-backend** (Port 10000) - Main backend with Practice Panther integration
@@ -39,7 +40,7 @@
 - API endpoints will be distributed across all 4 services
 - Health checks are configured for all services
 
-##  **Your ESQs AI Legal Platform is Ready!**
+##  **Your ESQs-Platform-Enhanced-v4-5-2 is Ready!**
 
 The platform includes everything you requested:
 - AI setup with chat interface 
