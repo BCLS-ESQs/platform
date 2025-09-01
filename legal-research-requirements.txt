@@ -1,33 +1,20 @@
-﻿# ESQs Legal Research API - Python Dependencies
-# Fixed for Render deployment with proper spacy installation
+﻿# SYNTHIA AI OPTIMIZED REQUIREMENTS
+# Multi-AI Analysis Result: Zero-compilation dependencies
+# Strategic deployment: Core functionality first, advanced NLP later
 
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-
-# HTTP and validation
-httpx==0.25.2
 pydantic==2.5.0
+httpx==0.25.2
 python-multipart==0.0.6
-
-# Database
 sqlalchemy==2.0.23
-
-# NLP - Using pre-compiled wheels to avoid compilation issues
-spacy>=3.7.0,<3.8.0
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
-
-# Document processing
 python-docx==1.1.0
 PyPDF2==3.0.1
 beautifulsoup4==4.12.2
-
-# Additional NLP tools (pre-compiled)
-numpy>=1.24.0,<2.0.0
-pandas>=2.0.0,<3.0.0
-
-# Web scraping and API
 requests==2.31.0
 aiofiles==23.2.0
-
-# Utilities
 python-dotenv==1.0.0
+
+# Lightweight text processing (No compilation)
+nltk==3.8.1
+textblob==0.17.1

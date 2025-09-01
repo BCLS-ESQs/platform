@@ -1,34 +1,33 @@
-﻿{
-  "name": "esqs-platform-enhanced-v4-5-2",
-  "version": "0.1.0",
-  "private": true,
+{
+  "name": "esqs-platform-backend",
+  "version": "1.0.0",
+  "description": "ESQs Platform Backend Server - Connects online platforms to local Practice Panther and F: drive data",
+  "main": "backend-server.js",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
     "start": "node backend-server.js",
-    "lint": "eslint"
+    "dev": "nodemon backend-server.js",
+    "install-deps": "npm install",
+    "setup": "npm install && npm start"
   },
   "dependencies": {
-    "@heroicons/react": "^2.2.0",
-    "next": "15.5.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "express": "^4.18.2",
-    "compression": "^1.7.4",
+    "better-sqlite3": "^12.2.0",
     "cors": "^2.8.5",
-    "better-sqlite3": "^8.7.0",
-    "multer": "^1.4.5-lts.1",
-    "axios": "^1.5.0"
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.7"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.0",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "esqs",
+    "legal",
+    "practice-panther",
+    "backend",
+    "api"
+  ],
+  "author": "ESQs Platform",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
