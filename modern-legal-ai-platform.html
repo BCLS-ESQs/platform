@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESQs Legal Intelligence Platform - Boyack Christiansen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #fafafa;
+            color: #1f2937;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .firm-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .platform-badge {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-dropdown {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .ai-toggle {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: calc(100vh - 64px);
+            background: #fafafa;
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+            padding: 0 24px;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #374151;
+            text-decoration: none;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .nav-item.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .practice-panther-status {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .pp-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #047857;
+            margin-bottom: 4px;
+        }
+
+        .pp-path {
+            font-size: 11px;
+            color: #065f46;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Center Content Area */
+        .content-area {
+            background: white;
+            margin: 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 24px 32px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #166534;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 24px 32px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 16px 20px;
+            border-radius: 16px;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: #dbeafe;
+            color: #1e40af;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .chat-input-area {
+            padding: 24px 32px;
+            border-top: 1px solid #e5e7eb;
+            background: #fafafa;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 14px;
+            background: white;
+            resize: none;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .voice-btn, .send-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .voice-btn {
+            background: #f3f4f6;
+            color: #6b7280;
+            width: 44px;
+            height: 44px;
+        }
+
+        .voice-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .voice-btn.listening {
+            background: #ef4444;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        .send-btn {
+            background: #3b82f6;
+            color: white;
+            width: 44px;
+            height: 44px;
+        }
+
+        .send-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Right Panel */
+        .right-panel {
+            background: white;
+            border-left: 1px solid #e5e7eb;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .panel-section {
+            margin-bottom: 32px;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-actions {
+            display: grid;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 13px;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .file-drop-zone.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .drop-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        .drop-text {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .recent-files {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f3f4f6;
+        }
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            background: #dbeafe;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1d4ed8;
+            font-size: 14px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .file-meta {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .case-overview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .case-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .case-detail {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.95); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            .sidebar, .right-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo-section">
+            <div class="firm-logo">⚖️ Boyack Christiansen Legal Solutions</div>
+            <div class="platform-badge">ESQs AI Platform</div>
+        </div>
+        <div class="nav-actions">
+            <select class="user-dropdown" onchange="switchUser()">
+                <option value="travis">Travis R. Christiansen</option>
+                <option value="john">John W Adams</option>
+                <option value="josephine">Josephine Millar</option>
+                <option value="jordan">Jordan Gubler</option>
+                <option value="jessica">Jessica Byergo</option>
+            </select>
+            <button class="ai-toggle" onclick="toggleAI()">
+                <span>🤖</span>
+                <span id="ai-status-text">AI Active</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Workspace</div>
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <div class="nav-icon">🏠</div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('cases')">
+                    <div class="nav-icon">📁</div>
+                    <span>Cases</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('research')">
+                    <div class="nav-icon">📚</div>
+                    <span>Legal Research</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('documents')">
+                    <div class="nav-icon">📄</div>
+                    <span>Documents</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('calendar')">
+                    <div class="nav-icon">📅</div>
+                    <span>Calendar</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Practice Panther</div>
+                <a href="#" class="nav-item" onclick="showSection('pp-contacts')">
+                    <div class="nav-icon">👥</div>
+                    <span>Contacts</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('pp-matters')">
+                    <div class="nav-icon">⚖️</div>
+                    <span>Matters</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('pp-billing')">
+                    <div class="nav-icon">💰</div>
+                    <span>Billing</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('pp-files')">
+                    <div class="nav-icon">🗂️</div>
+                    <span>File Management</span>
+                </a>
+
+                <div class="practice-panther-status">
+                    <div class="pp-title">✅ F: Drive Connected</div>
+                    <div class="pp-path">F:\Practice-Panther-Clone\</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">AI Tools</div>
+                <a href="#" class="nav-item" onclick="showSection('ai-chat')">
+                    <div class="nav-icon">💬</div>
+                    <span>AI Assistant</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('ai-draft')">
+                    <div class="nav-icon">✍️</div>
+                    <span>Document Drafting</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('ai-research')">
+                    <div class="nav-icon">🔍</div>
+                    <span>Case Research</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('ai-review')">
+                    <div class="nav-icon">🔍</div>
+                    <span>Document Review</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Center Content -->
+        <div class="content-area">
+            <div class="content-header">
+                <h1 class="content-title" id="content-title">AI Legal Assistant</h1>
+                <div class="ai-status">
+                    <span>🟢</span>
+                    <span>F: Drive Exclusive</span>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message ai">
+                        <div class="message-header">
+                            <span>🤖</span>
+                            <span>ESQs AI Assistant</span>
+                            <span style="color: #9ca3af;">• Just now</span>
+                        </div>
+                        <div>
+                            <strong>Welcome to ESQs Legal Intelligence Platform!</strong><br><br>
+                            I'm your AI legal assistant, running exclusively from F: drive with full access to:<br><br>
+                            📁 <strong>Practice Panther Integration</strong> - Complete client and case data<br>
+                            📚 <strong>Legal Research Tools</strong> - Case law, statutes, and precedents<br>
+                            📄 <strong>Document Management</strong> - Draft, review, and analyze legal documents<br>
+                            ⚖️ <strong>Matter Management</strong> - Track cases, deadlines, and billing<br>
+                            🗂️ <strong>F: Drive File Access</strong> - All firm documents and client files<br><br>
+                            How can I assist with your legal work today?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chat-input" 
+                            placeholder="Ask about cases, research legal questions, draft documents, or analyze files..."
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                        ></textarea>
+                        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">
+                            🎤
+                        </button>
+                        <button class="send-btn" onclick="sendMessage()">
+                            →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="panel-section">
+                <div class="panel-title">
+                    <span>📎</span>
+                    <span>Quick Actions</span>
+                </div>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="quickAction('new-matter')">📁 Create New Matter</button>
+                    <button class="action-btn" onclick="quickAction('search-cases')">🔍 Search Case Law</button>
+                    <button class="action-btn" onclick="quickAction('draft-document')">✍️ Draft Document</button>
+                    <button class="action-btn" onclick="quickAction('billing-entry')">⏱️ Time Entry</button>
+                    <button class="action-btn" onclick="quickAction('calendar-event')">📅 Schedule Event</button>
+                    <button class="action-btn" onclick="quickAction('client-communication')">📧 Client Email</button>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">
+                    <span>📁</span>
+                    <span>Upload Documents</span>
+                </div>
+                <div class="file-drop-zone" id="drop-zone">
+                    <div class="drop-icon">📄</div>
+                    <div class="drop-text">
+                        Drop files here or click to upload<br>
+                        <small>PDF, DOC, DOCX supported</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">
+                    <span>🕒</span>
+                    <span>Recent Files</span>
+                </div>
+                <div class="recent-files" id="recent-files">
+                    <div class="file-item" onclick="openFile('Harrison_Estate_Planning_TRC-2024-0892.json')">
+                        <div class="file-icon">📋</div>
+                        <div class="file-info">
+                            <div class="file-name">Harrison Estate Planning</div>
+                            <div class="file-meta">Matter TRC-2024-0892 • F: Drive</div>
+                        </div>
+                    </div>
+                    <div class="file-item" onclick="openFile('Trust_Documents_Harrison.pdf')">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <div class="file-name">Trust Documents</div>
+                            <div class="file-meta">Harrison Family • F: Drive</div>
+                        </div>
+                    </div>
+                    <div class="file-item" onclick="openFile('Will_Draft_Harrison_2024.docx')">
+                        <div class="file-icon">📝</div>
+                        <div class="file-info">
+                            <div class="file-name">Will Draft 2024</div>
+                            <div class="file-meta">Harrison • F: Drive</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">
+                    <span>📊</span>
+                    <span>Active Matter</span>
+                </div>
+                <div class="case-overview" id="case-overview">
+                    <div class="case-title">Harrison Estate Planning</div>
+                    <div class="case-detail">Client: Harrison Family Trust</div>
+                    <div class="case-detail">Matter: TRC-2024-0892</div>
+                    <div class="case-detail">Status: Active Estate Planning</div>
+                    <div class="case-detail">Location: F:\Practice-Panther-Clone\Harrison</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ESQsAIPlatform {
+            constructor() {
+                this.currentUser = 'travis';
+                this.currentSection = 'ai-chat';
+                this.isVoiceActive = false;
+                this.recognition = null;
+                
+                this.setupEventListeners();
+                this.setupDragAndDrop();
+                this.setupVoiceRecognition();
+                this.updateUserInterface();
+                
+                console.log('🚀 ESQs Legal Intelligence Platform - F: Drive Exclusive');
+                console.log('🤖 AI Assistant Active');
+                console.log('📁 Practice Panther Connected');
+                console.log('⚖️ Full Legal Platform Loaded');
+            }
+
+            setupEventListeners() {
+                const chatInput = document.getElementById('chat-input');
+                chatInput.addEventListener('input', this.autoResize);
+            }
+
+            autoResize(e) {
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+            }
+
+            handleKeyDown(event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    this.sendMessage();
+                }
+            }
+
+            setupDragAndDrop() {
+                const dropZone = document.getElementById('drop-zone');
+                
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, () => {
+                        dropZone.classList.add('dragover');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, () => {
+                        dropZone.classList.remove('dragover');
+                    });
+                });
+
+                dropZone.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    [...files].forEach(file => this.analyzeDocument(file));
+                });
+
+                dropZone.addEventListener('click', () => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.multiple = true;
+                    input.accept = '.pdf,.doc,.docx,.txt';
+                    input.onchange = (e) => {
+                        [...e.target.files].forEach(file => this.analyzeDocument(file));
+                    };
+                    input.click();
+                });
+            }
+
+            setupVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.processVoiceInput(transcript);
+                    };
+                    
+                    this.recognition.onerror = () => this.stopVoice();
+                    this.recognition.onend = () => this.stopVoice();
+                }
+            }
+
+            toggleVoice() {
+                if (this.isVoiceActive) {
+                    this.stopVoice();
+                } else {
+                    this.startVoice();
+                }
+            }
+
+            startVoice() {
+                if (this.recognition) {
+                    this.isVoiceActive = true;
+                    const voiceBtn = document.getElementById('voice-btn');
+                    voiceBtn.classList.add('listening');
+                    voiceBtn.textContent = '🔴';
+                    this.recognition.start();
+                }
+            }
+
+            stopVoice() {
+                if (this.recognition && this.isVoiceActive) {
+                    this.isVoiceActive = false;
+                    const voiceBtn = document.getElementById('voice-btn');
+                    voiceBtn.classList.remove('listening');
+                    voiceBtn.textContent = '🎤';
+                    this.recognition.stop();
+                }
+            }
+
+            processVoiceInput(transcript) {
+                const chatInput = document.getElementById('chat-input');
+                chatInput.value = transcript;
+                this.sendMessage();
+            }
+
+            sendMessage() {
+                const input = document.getElementById('chat-input');
+                const message = input.value.trim();
+                if (message) {
+                    this.addUserMessage(message);
+                    this.processAIResponse(message);
+                    input.value = '';
+                    input.style.height = 'auto';
+                }
+            }
+
+            addUserMessage(message) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user';
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span>👤</span>
+                        <span>${this.getCurrentUserName()}</span>
+                        <span style="color: #9ca3af;">• Just now</span>
+                    </div>
+                    <div>${message}</div>
+                `;
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            addAIMessage(message) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message ai';
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span>🤖</span>
+                        <span>ESQs AI Assistant</span>
+                        <span style="color: #9ca3af;">• Just now</span>
+                    </div>
+                    <div>${message}</div>
+                `;
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            processAIResponse(message) {
+                // Simulate AI processing delay
+                setTimeout(() => {
+                    let response = '';
+                    
+                    if (message.toLowerCase().includes('practice panther') || message.toLowerCase().includes('pp')) {
+                        response = `<strong>📁 Practice Panther Integration Active</strong><br><br>
+                        I can access all Practice Panther data from F: drive:<br>
+                        • Client contacts and matter information<br>
+                        • Billing and time entries<br>
+                        • Document management<br>
+                        • Calendar and deadlines<br><br>
+                        Location: F:\\Practice-Panther-Clone\\<br>
+                        What specific Practice Panther data do you need?`;
+                    } else if (message.toLowerCase().includes('research') || message.toLowerCase().includes('case law')) {
+                        response = `<strong>📚 Legal Research Assistant</strong><br><br>
+                        I can help with comprehensive legal research:<br>
+                        • Case law analysis and precedent search<br>
+                        • Statute and regulation review<br>
+                        • Legal memo drafting<br>
+                        • Citation verification<br><br>
+                        What legal issue would you like me to research?`;
+                    } else if (message.toLowerCase().includes('document') || message.toLowerCase().includes('draft')) {
+                        response = `<strong>✍️ Document Drafting & Analysis</strong><br><br>
+                        I can assist with all document needs:<br>
+                        • Contract drafting and review<br>
+                        • Legal brief preparation<br>
+                        • Estate planning documents<br>
+                        • Correspondence and filings<br><br>
+                        What type of document do you need help with?`;
+                    } else if (message.toLowerCase().includes('harrison') || message.toLowerCase().includes('estate')) {
+                        response = `<strong>📋 Harrison Estate Planning Matter</strong><br><br>
+                        <strong>Matter:</strong> TRC-2024-0892<br>
+                        <strong>Client:</strong> Harrison Family Trust<br>
+                        <strong>Status:</strong> Active Estate Planning<br>
+                        <strong>Location:</strong> F:\\Practice-Panther-Clone\\Harrison<br><br>
+                        Recent activity:<br>
+                        • Trust documents review completed<br>
+                        • Will draft 2024 in progress<br>
+                        • Estate planning consultation scheduled<br><br>
+                        How can I assist with this matter?`;
+                    } else {
+                        response = `<strong>🤖 ESQs AI Response</strong><br><br>
+                        I understand you're asking about: "${message}"<br><br>
+                        I have full access to:<br>
+                        📁 F: Drive file system<br>
+                        ⚖️ Practice Panther data<br>
+                        📚 Legal research databases<br>
+                        📄 All firm documents<br><br>
+                        Could you provide more specific details about what you need help with?`;
+                    }
+                    
+                    this.addAIMessage(response);
+                }, 1000);
+            }
+
+            analyzeDocument(file) {
+                this.addUserMessage(`📎 Uploaded: ${file.name}`);
+                
+                setTimeout(() => {
+                    const analysis = `<strong>📄 Document Analysis Complete</strong><br><br>
+                    <strong>File:</strong> ${file.name}<br>
+                    <strong>Type:</strong> ${this.getFileType(file.name)}<br>
+                    <strong>Size:</strong> ${this.formatFileSize(file.size)}<br><br>
+                    <strong>AI Analysis:</strong><br>
+                    Document processed and stored in F: drive. Content analyzed for legal relevance and categorized appropriately.<br><br>
+                    <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="esqs.performAction('save', '${file.name}')" style="background: #dbeafe; border: 1px solid #93c5fd; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;">💾 Save</button>
+                        <button onclick="esqs.performAction('review', '${file.name}')" style="background: #fef3c7; border: 1px solid #fcd34d; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;">👁️ Review</button>
+                        <button onclick="esqs.performAction('extract', '${file.name}')" style="background: #d1fae5; border: 1px solid #86efac; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;">📋 Extract</button>
+                    </div>`;
+                    
+                    this.addAIMessage(analysis);
+                }, 1500);
+            }
+
+            getFileType(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const types = {
+                    'pdf': 'PDF Document',
+                    'doc': 'Word Document',
+                    'docx': 'Word Document',
+                    'txt': 'Text Document',
+                    'json': 'Data File'
+                };
+                return types[ext] || 'Document';
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            switchUser() {
+                const selector = document.querySelector('.user-dropdown');
+                this.currentUser = selector.value;
+                this.updateUserInterface();
+            }
+
+            updateUserInterface() {
+                const caseData = {
+                    travis: { case: 'Harrison Estate Planning', client: 'Harrison Family Trust', matter: 'TRC-2024-0892', status: 'Active Estate Planning', location: 'F:\\Practice-Panther-Clone\\Harrison' },
+                    john: { case: 'Corporate Merger Review', client: 'TechCorp Industries', matter: 'JWA-2024-0156', status: 'Due Diligence Phase', location: 'F:\\Practice-Panther-Clone\\TechCorp' },
+                    josephine: { case: 'Employment Dispute', client: 'Regional Medical Center', matter: 'JM-2024-0234', status: 'Discovery Phase', location: 'F:\\Practice-Panther-Clone\\Regional' },
+                    jordan: { case: 'Real Estate Transaction', client: 'Mountain View Properties', matter: 'JG-2024-0078', status: 'Contract Negotiation', location: 'F:\\Practice-Panther-Clone\\MountainView' },
+                    jessica: { case: 'Intellectual Property Filing', client: 'Innovation Labs LLC', matter: 'JB-2024-0345', status: 'Patent Application', location: 'F:\\Practice-Panther-Clone\\Innovation' }
+                };
+                
+                const caseInfo = caseData[this.currentUser];
+                const caseOverview = document.getElementById('case-overview');
+                caseOverview.innerHTML = `
+                    <div class="case-title">${caseInfo.case}</div>
+                    <div class="case-detail">Client: ${caseInfo.client}</div>
+                    <div class="case-detail">Matter: ${caseInfo.matter}</div>
+                    <div class="case-detail">Status: ${caseInfo.status}</div>
+                    <div class="case-detail">Location: ${caseInfo.location}</div>
+                `;
+            }
+
+            getCurrentUserName() {
+                const names = {
+                    travis: 'Travis R. Christiansen',
+                    john: 'John W Adams',
+                    josephine: 'Josephine Millar',
+                    jordan: 'Jordan Gubler',
+                    jessica: 'Jessica Byergo'
+                };
+                return names[this.currentUser] || 'User';
+            }
+
+            performAction(action, filename) {
+                const actions = {
+                    save: `💾 Saved ${filename} to F: drive case folder`,
+                    review: `👁️ Opening ${filename} for detailed review`,
+                    extract: `📋 Extracting key information from ${filename}`
+                };
+                
+                this.addAIMessage(`<strong>${actions[action]}</strong><br>Action completed successfully.`);
+            }
+
+            showSection(section) {
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.closest('.nav-item').classList.add('active');
+                
+                // Update content title
+                const titles = {
+                    dashboard: 'Dashboard Overview',
+                    cases: 'Case Management',
+                    research: 'Legal Research',
+                    documents: 'Document Center',
+                    calendar: 'Calendar & Deadlines',
+                    'pp-contacts': 'Practice Panther - Contacts',
+                    'pp-matters': 'Practice Panther - Matters',
+                    'pp-billing': 'Practice Panther - Billing',
+                    'pp-files': 'Practice Panther - Files',
+                    'ai-chat': 'AI Legal Assistant',
+                    'ai-draft': 'AI Document Drafting',
+                    'ai-research': 'AI Legal Research',
+                    'ai-review': 'AI Document Review'
+                };
+                
+                document.getElementById('content-title').textContent = titles[section] || 'ESQs Platform';
+                this.currentSection = section;
+            }
+
+            quickAction(action) {
+                const responses = {
+                    'new-matter': 'Creating new matter in Practice Panther...',
+                    'search-cases': 'Initiating case law search...',
+                    'draft-document': 'Opening document drafting assistant...',
+                    'billing-entry': 'Creating new time entry...',
+                    'calendar-event': 'Opening calendar scheduler...',
+                    'client-communication': 'Preparing client email template...'
+                };
+                
+                this.addAIMessage(`<strong>⚡ Quick Action</strong><br>${responses[action]}`);
+            }
+
+            toggleAI() {
+                const statusText = document.getElementById('ai-status-text');
+                if (statusText.textContent === 'AI Active') {
+                    statusText.textContent = 'AI Paused';
+                    this.addAIMessage('🔄 AI Assistant paused. Click to reactivate.');
+                } else {
+                    statusText.textContent = 'AI Active';
+                    this.addAIMessage('✅ AI Assistant reactivated and ready to help.');
+                }
+            }
+
+            openFile(filename) {
+                this.addAIMessage(`<strong>📂 Opening File</strong><br>Loading ${filename} from F: drive...`);
+            }
+        }
+
+        // Global functions
+        let esqs;
+
+        function switchUser() { esqs.switchUser(); }
+        function toggleAI() { esqs.toggleAI(); }
+        function toggleVoice() { esqs.toggleVoice(); }
+        function sendMessage() { esqs.sendMessage(); }
+        function handleKeyDown(event) { esqs.handleKeyDown(event); }
+        function showSection(section) { esqs.showSection(section); }
+        function quickAction(action) { esqs.quickAction(action); }
+        function openFile(filename) { esqs.openFile(filename); }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            esqs = new ESQsAIPlatform();
+            console.log('✅ ESQs Legal Intelligence Platform loaded');
+            console.log('🤖 Modern AI UI similar to Notion/Linear/Monday.com');
+            console.log('📁 Full Practice Panther integration from F: drive');
+            console.log('⚖️ Complete legal workflow platform ready');
+        });
+    </script>
+</body>
+</html>

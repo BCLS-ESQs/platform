@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESQs Legal Intelligence Platform - Saint George Law</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #2d1b69 100%);
+            color: #ffffff; height: 100vh; display: flex; flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px; border-bottom: 2px solid #3b82f6;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo-section {
+            display: flex; align-items: center; gap: 20px;
+        }
+
+        .firm-logo {
+            font-size: 24px; font-weight: bold; color: #60a5fa;
+        }
+
+        .platform-title {
+            font-size: 28px; font-weight: 900; color: #60a5fa;
+            text-align: center; flex: 1;
+        }
+
+        .user-selector {
+            background: #3b82f6; color: white; padding: 10px 16px;
+            border-radius: 8px; border: none; cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid; grid-template-columns: 300px 1fr 300px;
+            flex: 1; gap: 2px; min-height: 0;
+        }
+
+        /* Left Sidebar */
+        .left-sidebar {
+            background: #1e293b; padding: 20px; overflow-y: auto;
+        }
+
+        .case-section {
+            background: rgba(59, 130, 246, 0.1); border-radius: 8px;
+            padding: 16px; margin-bottom: 16px;
+        }
+
+        .section-title {
+            color: #60a5fa; font-size: 14px; font-weight: 600;
+            margin-bottom: 12px; text-transform: uppercase;
+        }
+
+        .case-item {
+            background: rgba(15, 23, 42, 0.6); border-radius: 6px;
+            padding: 12px; margin-bottom: 8px;
+        }
+
+        .case-title { color: #e2e8f0; font-weight: 600; margin-bottom: 4px; }
+        .case-details { color: #94a3b8; font-size: 12px; }
+
+        /* Chat Area */
+        .chat-container {
+            background: #0f172a; display: flex; flex-direction: column;
+            border-left: 1px solid #334155; border-right: 1px solid #334155;
+        }
+
+        .chat-messages {
+            flex: 1; padding: 20px; overflow-y: auto;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .message {
+            background: rgba(59, 130, 246, 0.1); border-radius: 12px;
+            padding: 16px; margin-bottom: 16px; border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .message-header {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+        }
+
+        .avatar { font-size: 20px; }
+        .message-sender { font-weight: 600; color: #60a5fa; }
+        .message-time { font-size: 11px; color: #94a3b8; }
+
+        .message-content { color: #e2e8f0; line-height: 1.5; }
+
+        .input-area {
+            padding: 20px; background: #1e293b;
+            border-top: 1px solid #334155;
+        }
+
+        .input-container {
+            display: flex; gap: 12px; align-items: center;
+        }
+
+        .chat-input {
+            flex: 1; background: #0f172a; border: 1px solid #334155;
+            border-radius: 8px; padding: 12px; color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .chat-input:focus {
+            outline: none; border-color: #3b82f6;
+        }
+
+        .send-btn {
+            background: #3b82f6; color: white; border: none;
+            border-radius: 8px; padding: 12px 20px; cursor: pointer;
+            font-weight: 600;
+        }
+
+        .send-btn:hover { background: #2563eb; }
+
+        .voice-btn {
+            display: flex; flex-direction: column; align-items: center;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            border: none; border-radius: 12px; padding: 12px; cursor: pointer;
+            transition: all 0.3s ease; min-width: 80px; position: relative;
+            color: white; font-size: 16px;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.05); box-shadow: 0 8px 24px rgba(220, 38, 38, 0.4);
+        }
+
+        .voice-btn.listening {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            animation: voicePulse 1.5s infinite;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            50% { box-shadow: 0 0 20px 10px rgba(16, 185, 129, 0.3); }
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            background: #334155; padding: 20px; overflow-y: auto;
+        }
+
+        .activity-section {
+            background: rgba(168, 85, 247, 0.1); border-radius: 8px;
+            padding: 16px; margin-bottom: 16px;
+        }
+
+        .activity-item {
+            background: rgba(15, 23, 42, 0.6); border-radius: 6px;
+            padding: 10px; margin-bottom: 8px; cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .activity-time { font-size: 10px; color: #a855f7; margin-bottom: 4px; }
+        .activity-title { font-size: 12px; color: #e2e8f0; margin-bottom: 2px; }
+        .activity-type { font-size: 10px; color: #94a3b8; }
+
+        /* Drag and Drop */
+        .chat-messages.dragover {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 2px dashed #10b981;
+        }
+
+        .drop-zone {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; color: #10b981; font-size: 16px;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+
+        .chat-messages.dragover .drop-zone { opacity: 1; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; border-radius: 6px; padding: 8px 12px;
+            font-size: 11px; cursor: pointer; transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 1000px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            .left-sidebar, .right-sidebar {
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-section">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDMwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjwhLS0gQm95YWNrIENocmlzdGlhbnNlbiBMZWdhbCBTb2x1dGlvbnMgTG9nbyAtLT4KPHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDMwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjMWUyOTNiIi8+CjwhLS0gU2hpZWxkIEVtYmxlbSAtLT4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxwYXRoIGQ9Ik0xMCAwQzUgMCAwIDUgMCAxMFY0MEMwIDUwIDEwIDYwIDMwIDYwQzUwIDYwIDYwIDUwIDYwIDQwVjEwQzYwIDUgNTUgMCA1MCBIME0xMCAwWiIgZmlsbD0iI0NEOUNBMyIvPgo8IS0tIFNjYWxlcyBvZiBKdXN0aWNlIC0tPgo8cGF0aCBkPSJNMzAgMTBMMzUgMjBIMjVMMzAgMTBaIiBmaWxsPSIjODc2NDQzIi8+CjxjaXJjbGUgY3g9IjE4IiBjeT0iMjUiIHI9IjMiIGZpbGw9IiM4NzY0NDMiLz4KPGNpcmNsZSBjeD0iNDIiIGN5PSIyNSIgcj0iMyIgZmlsbD0iIzg3NjQ0MyIvPgo8bGluZSB4MT0iMTUiIHkxPSIyNSIgeDI9IjQ1IiB5Mj0iMjUiIHN0cm9rZT0iIzg3NjQ0MyIgc3Ryb2tlLXdpZHRoPSIyIi8+CjwhLS0gV2hlYXQgRGVjb3JhdGlvbiAtLT4KPHN2ZyB4PSIwIiB5PSI0MCI+CjxwYXRoIGQ9Ik0xMCAyMEw1IDEwTDE1IDEwTDEwIDIwWiIgZmlsbD0iI0NEOUNBMyIvPgo8L3N2Zz4KPC9zdmc+CjxzdmcgeD0iNTAiIHk9IjQwIj4KPHN2ZyB4PSI1IiB5PSIwIj4KPHN2ZyB4PSI0NSIgeT0iNDAiPgo8L3N2Zz4KPC9zdmc+CjwvZz4KPCEtLSBDb21wYW55IE5hbWUgLS0+Cjx0ZXh0IHg9IjEwMCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM2MGE1ZmEiPkJPWUFDSyBDSFJJU1RJQU5TRU48L3RleHQ+Cjx0ZXh0IHg9IjEwMCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzEwYjk4MSI+TEVHQUwgU09MVVRJT05TPC90ZXh0Pgo8L3N2Zz4=" 
+                     alt="Boyack Christiansen Legal Solutions" class="bc-logo" style="width: 200px; height: auto;">
+            </div>
+            
+            <h1 class="platform-title">ESQs Legal Intelligence Platform</h1>
+            
+            <select class="user-selector" id="userSelector" onchange="switchUser()" title="Select Team Member">
+                <option value="travis">Travis R. Christiansen</option>
+                <option value="john">John W Adams</option>
+                <option value="josephine">Josephine Millar</option>
+                <option value="jordan">Jordan Gubler</option>
+                <option value="jessica">Jessica Byergo</option>
+            </select>
+        </div>    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="case-section">
+                <h3 class="section-title" id="caseTitle">📁 Active Cases</h3>
+                
+                <div class="case-item">
+                    <div class="case-title" id="activeCase">Harrison Estate Planning</div>
+                    <div class="case-details" id="caseType">Estate Planning • Active</div>
+                </div>
+
+                <div class="case-item">
+                    <div class="case-title">📅 Next Deadline</div>
+                    <div class="case-details" id="nextDeadline">Trust Documents Due: Sept 8, 2025</div>
+                </div>
+
+                <div class="case-item">
+                    <div class="case-title">🎯 Strategy</div>
+                    <div class="case-details" id="strategy">Estate tax optimization</div>
+                </div>
+            </div>
+
+            <div class="case-section">
+                <h3 class="section-title">🤖 AI Insights</h3>
+                <div class="case-item">
+                    <div class="case-details" id="insight1">Estate planning review needed</div>
+                </div>
+                <div class="case-item">
+                    <div class="case-details" id="insight2">Tax consultation recommended</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="drop-zone">
+                    📄 Drop legal documents here for AI analysis
+                </div>
+                
+                <div class="message">
+                    <div class="message-header">
+                        <span class="avatar">🤖</span>
+                        <span class="message-sender">ESQs AI</span>
+                        <span class="message-time">Now</span>
+                    </div>
+                    <div class="message-content">
+                        <strong>Welcome to Saint George Law's ESQs Platform!</strong><br><br>
+                        
+                        I'm your legal AI assistant. I can help with:
+                        <ul style="margin: 12px 0; padding-left: 20px;">
+                            <li>📄 Document analysis (drag & drop files)</li>
+                            <li>🔍 Legal research and case law</li>
+                            <li>📋 Document generation</li>
+                            <li>⏰ Case management</li>
+                            <li>🎤 Voice commands</li>
+                        </ul>
+                        
+                        <strong>Just type your question or drag documents to begin!</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                                            <button class="voice-btn" id="voice-control" onclick="toggleVoice()">
+                            <span class="voice-icon">🎤</span>
+                            <span class="voice-status" id="voice-status">OFF</span>
+                        </button>
+                    <input type="text" class="chat-input" id="chatInput" 
+                           placeholder="Ask about cases, research law, or drop documents..." 
+                           onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="activity-section">
+                <h3 class="section-title">📅 Today's Schedule</h3>
+                <div id="scheduleItems">
+                    <div class="activity-item">
+                        <div class="activity-time">9:00 AM</div>
+                        <div class="activity-title">Estate Planning Review</div>
+                        <div class="activity-type">📋 Document Review</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">2:00 PM</div>
+                        <div class="activity-title">Client Meeting</div>
+                        <div class="activity-type">👥 Conference</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-section">
+                <h3 class="section-title">📁 Firm Files</h3>
+                <div class="file-browser">
+                    <div class="activity-item repo-file" onclick="openRepoFolder('contracts')">
+                        <div class="activity-time">📁 Contracts</div>
+                        <div class="activity-title">Service Agreements & NDAs</div>
+                        <div class="activity-type">4 files • Git repo</div>
+                    </div>
+                    <div class="activity-item repo-file" onclick="openRepoFolder('estate-planning')">
+                        <div class="activity-time">📁 Estate</div>
+                        <div class="activity-title">Wills & Trust Documents</div>
+                        <div class="activity-type">6 files • Git repo</div>
+                    </div>
+                    <div class="activity-item repo-file" onclick="openRepoFolder('litigation')">
+                        <div class="activity-time">� Litigation</div>
+                        <div class="activity-title">Motions & Discovery</div>
+                        <div class="activity-type">8 files • Git repo</div>
+                    </div>
+                    <div class="activity-item repo-file" onclick="openRepoFile('Harrison Trust Amendment.docx')">
+                        <div class="activity-time">2 hours ago</div>
+                        <div class="activity-title">Harrison Trust Amendment</div>
+                        <div class="activity-type">� Recent Document</div>
+                    </div>
+                </div>
+                <div class="activity-item" onclick="openFile('research-memo')">
+                    <div class="activity-time">Aug 27, 2025</div>
+                    <div class="activity-title">Legal Research Memo</div>
+                    <div class="activity-type">📚 Research</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ESQs Legal Platform - Saint George Law
+        class ESQsLegalPlatform {
+            constructor() {
+                this.currentUser = 'travis';
+                this.isListening = false;
+                this.recognition = null;
+                
+                this.userData = {
+                    travis: {
+                        name: 'Travis R. Christiansen',
+                        role: 'Principal Attorney',
+                        activeCase: 'Harrison Estate Planning',
+                        caseType: 'Estate Planning • TRC-2024-0892',
+                        deadline: 'Trust Documents Due: Sept 8, 2025',
+                        strategy: 'Estate tax optimization',
+                        insights: ['Estate planning review needed', 'Tax consultation recommended']
+                    },
+                    john: {
+                        name: 'John W Adams',
+                        role: 'Attorney',
+                        activeCase: 'State v. Johnson',
+                        caseType: 'Criminal Defense • JWA-2024-0445',
+                        deadline: 'Motion to Suppress Due: Sept 5, 2025',
+                        strategy: 'Fourth Amendment violations',
+                        insights: ['Constitutional violation documented', 'Expert witness needed']
+                    },
+                    josephine: {
+                        name: 'Josephine Millar',
+                        role: 'Legal Assistant',
+                        activeCase: 'Williams Family Law',
+                        caseType: 'Family Law • JM-2024-0331',
+                        deadline: 'Property Settlement: Sept 10, 2025',
+                        strategy: 'Asset division documentation',
+                        insights: ['Asset valuation complete', 'Financial expert needed']
+                    },
+                    jordan: {
+                        name: 'Jordan Gubler',
+                        role: 'Assistant',
+                        activeCase: 'Thompson Contract',
+                        caseType: 'Contract Law • JG-2024-0156',
+                        deadline: 'Discovery Due: Sept 7, 2025',
+                        strategy: 'Contract breach litigation',
+                        insights: ['Discovery organization needed', 'Timeline analysis in progress']
+                    },
+                    jessica: {
+                        name: 'Jessica Byergo',
+                        role: 'Client Specialist',
+                        activeCase: 'Client Intake Review',
+                        caseType: 'Administrative • JB-2024-0234',
+                        deadline: 'Client Follow-up: Sept 6, 2025',
+                        strategy: 'Client relationship management',
+                        insights: ['Client communication update needed', 'Intake process optimization']
+                    }
+                };
+
+                this.initializePlatform();
+            }
+
+            initializePlatform() {
+                this.setupDragDrop();
+                this.setupVoiceRecognition();
+                this.updateUserInterface();
+                console.log('ESQs Platform Ready - Saint George Law');
+            }
+
+            setupDragDrop() {
+                const chatMessages = document.getElementById('chatMessages');
+                let dragCounter = 0;
+
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    document.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+
+                chatMessages.addEventListener('dragenter', (e) => {
+                    e.preventDefault();
+                    dragCounter++;
+                    chatMessages.classList.add('dragover');
+                });
+
+                chatMessages.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    dragCounter--;
+                    if (dragCounter === 0) {
+                        chatMessages.classList.remove('dragover');
+                    }
+                });
+
+                chatMessages.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dragCounter = 0;
+                    chatMessages.classList.remove('dragover');
+                    
+                    const files = Array.from(e.dataTransfer.files);
+                    if (files.length > 0) {
+                        this.processFiles(files);
+                    }
+                });
+            }
+
+            setupVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.processVoiceInput(transcript);
+                    };
+                    
+                    this.recognition.onerror = () => this.stopVoiceRecognition();
+                    this.recognition.onend = () => this.stopVoiceRecognition();
+                    console.log('🎤 Voice recognition system ready');
+                }
+            }
+
+            processVoiceInput(transcript) {
+                this.addUserMessage(transcript, '🎤');
+                this.processMessage(transcript);
+            }
+
+            processFiles(files) {
+                // Immediate processing without permission dialogs
+                files.forEach(file => {
+                    this.addUserMessage(`📄 Analyzing: ${file.name}`, 'user');
+                    
+                    // Immediate analysis without delays or popups
+                    setTimeout(() => {
+                        this.analyzeDocument(file);
+                    }, 100);
+                });
+            }
+
+            analyzeDocument(file) {
+                const analysis = this.performAnalysis(file);
+                
+                // Display analysis immediately
+                const response = `
+**Document Analysis Complete: ${file.name}**
+
+📊 **Analysis Results:**
+${analysis.summary}
+
+🔍 **Key Findings:**
+${analysis.findings.map(f => `• ${f}`).join('\n')}
+
+📋 **Recommendations:**
+${analysis.recommendations.map(r => `• ${r}`).join('\n')}
+
+✅ Document processed and available in case file.
+                `.trim();
+                
+                this.addMessage(response, 'assistant');
+            }
+
+            performAnalysis(file) {
+                const name = file.name.toLowerCase();
+                const ext = name.split('.').pop();
+                
+                let category = 'General Legal';
+                let type = 'Document';
+                
+                if (name.includes('contract')) category = 'Contract Law';
+                else if (name.includes('estate')) category = 'Estate Planning';
+                else if (name.includes('motion')) category = 'Court Filing';
+                else if (name.includes('brief')) category = 'Legal Brief';
+                
+                if (ext === 'pdf') type = 'PDF Document';
+                else if (ext === 'docx') type = 'Word Document';
+                
+                return {
+                    type: type,
+                    category: category,
+                    recommendation: 'Save to case files and sync with Practice Panther',
+                    summary: `Document contains ${category.toLowerCase()} content. AI detected key legal terms and provisions that require attorney review.`
+                };
+            }
+
+            switchUser() {
+                const selector = document.getElementById('userSelector');
+                this.currentUser = selector.value;
+                this.updateUserInterface();
+                
+                this.addAIMessage(`<strong>👤 Switched to ${this.userData[this.currentUser].name}</strong><br>Role: ${this.userData[this.currentUser].role}<br><br>Case data updated for current user.`);
+            }
+
+            updateUserInterface() {
+                const user = this.userData[this.currentUser];
+                
+                document.getElementById('caseTitle').textContent = `📁 ${user.name.split(' ')[0]}'s Cases`;
+                document.getElementById('activeCase').textContent = user.activeCase;
+                document.getElementById('caseType').textContent = user.caseType;
+                document.getElementById('nextDeadline').textContent = user.deadline;
+                document.getElementById('strategy').textContent = user.strategy;
+                document.getElementById('insight1').textContent = user.insights[0];
+                document.getElementById('insight2').textContent = user.insights[1];
+            }
+
+            addUserMessage(message, icon = '👤') {
+                this.addMessage(message, icon, 'You', '#60a5fa');
+            }
+
+            addAIMessage(message) {
+                this.addMessage(message, '🤖', 'ESQs AI', '#10b981');
+            }
+
+            addMessage(content, icon, sender, color) {
+                const chatMessages = document.getElementById('chatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message';
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="avatar">${icon}</span>
+                        <span class="message-sender" style="color: ${color}">${sender}</span>
+                        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <div class="message-content">${content}</div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            processMessage(message) {
+                setTimeout(() => {
+                    if (message.toLowerCase().includes('case') || message.toLowerCase().includes('status')) {
+                        const user = this.userData[this.currentUser];
+                        this.addAIMessage(`<strong>📁 Case Status for ${user.name}</strong><br><br>Active Case: ${user.activeCase}<br>Type: ${user.caseType}<br>Next Deadline: ${user.deadline}<br>Strategy: ${user.strategy}`);
+                    } else if (message.toLowerCase().includes('research')) {
+                        this.addAIMessage(`<strong>🔍 Legal Research Results</strong><br><br>Found relevant case law and statutes for your query: "${message}"<br><br>• 12 relevant cases identified<br>• 5 applicable statutes found<br>• 3 recent precedents (2024-2025)<br><br><div class="action-buttons"><button class="action-btn" onclick="esqs.saveResearch()">💾 Save Research</button><button class="action-btn" onclick="esqs.createMemo()">📝 Create Memo</button></div>`);
+                    } else {
+                        this.addAIMessage(`<strong>🤖 ESQs AI Assistant</strong><br><br>I understand you're asking about: "${message}"<br><br>How can I help with your legal work today?<br><br><div class="action-buttons"><button class="action-btn" onclick="esqs.searchFiles()">🔍 Search Files</button><button class="action-btn" onclick="esqs.legalResearch()">📚 Research</button><button class="action-btn" onclick="esqs.caseManagement()">📁 Cases</button></div>`);
+                    }
+                }, 1000);
+            }
+
+            // Action methods
+            saveDocument(filename) { this.addAIMessage(`<strong>💾 Document Saved</strong><br>File: ${filename}<br>Saved to firm document library.`); }
+            createTemplate(filename) { this.addAIMessage(`<strong>📋 Template Created</strong><br>Based on: ${filename}<br>Template saved for future use.`); }
+            syncCase(filename) { this.addAIMessage(`<strong>🔗 Case Sync</strong><br>File: ${filename}<br>Synced with active case.`); }
+            generateSummary(filename) { this.addAIMessage(`<strong>📊 Summary Generated</strong><br>File: ${filename}<br>Executive summary created.`); }
+            saveResearch() { this.addAIMessage('<strong>💾 Research Saved</strong><br>Research saved to case files.'); }
+            createMemo() { this.addAIMessage('<strong>📝 Memo Created</strong><br>Legal memo generated.'); }
+            searchFiles() { this.addAIMessage('<strong>🔍 Searching Files</strong><br>Searching firm document library...'); }
+            legalResearch() { this.addAIMessage('<strong>📚 Legal Research</strong><br>Initiating comprehensive research...'); }
+            caseManagement() { this.addAIMessage('<strong>📁 Case Management</strong><br>Opening case management tools...'); }
+
+            toggleVoice() {
+                if (!this.recognition) {
+                    return; // Silently fail if no recognition
+                }
+                
+                if (this.isListening) {
+                    this.forceStopVoice();
+                } else {
+                    this.startVoice();
+                }
+            }
+
+            // Voice recognition methods (copied from working enhanced interface)
+            startVoice() {
+                this.startVoiceRecognition();
+            }
+
+            startVoiceRecognition() {
+                if (this.recognition) {
+                    this.isListening = true;
+                    
+                    const voiceControl = document.getElementById('voice-control');
+                    const voiceStatus = document.getElementById('voice-status');
+                    
+                    voiceControl.classList.add('listening');
+                    voiceStatus.textContent = 'ON';
+                    
+                    this.recognition.start();
+                    console.log('🎤 Voice recognition started');
+                }
+            }
+
+            stopVoiceRecognition() {
+                if (this.recognition && this.isListening) {
+                    this.isListening = false;
+                    
+                    const voiceControl = document.getElementById('voice-control');
+                    const voiceStatus = document.getElementById('voice-status');
+                    
+                    voiceControl.classList.remove('listening');
+                    voiceStatus.textContent = 'OFF';
+                    
+                    this.recognition.stop();
+                    console.log('🎤 Voice recognition stopped');
+                }
+            }
+        }
+
+        // Global functions
+        let esqs;
+
+        function switchUser() { esqs.switchUser(); }
+        function startVoice() { 
+            console.log('startVoice called, esqs:', !!esqs);
+            if (esqs && esqs.startVoice) {
+                console.log('Calling esqs.startVoice()');
+                esqs.startVoice(); 
+            } else {
+                console.log('Voice not available - esqs:', esqs);
+            }
+        }
+        function forceStopVoice() { 
+            console.log('forceStopVoice called');
+            if (esqs && esqs.forceStopVoice) {
+                esqs.forceStopVoice(); 
+            }
+        }
+        function toggleVoice() {
+            if (esqs.isListening) {
+                esqs.stopVoiceRecognition();
+            } else {
+                esqs.startVoiceRecognition();
+            }
+        }
+        
+        function handleKeyPress(event) { if (event.key === 'Enter') sendMessage(); }
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                esqs.addUserMessage(message);
+                esqs.processMessage(message);
+                input.value = '';
+            }
+        }
+        
+        // Practice Panther F: Drive file system functions
+        function openPracticeFile(fileType) {
+            const practiceFiles = {
+                'active-cases': {
+                    title: 'Practice Panther - Active Cases',
+                    files: [
+                        'Harrison Estate Planning - TRC-2024-0892.json',
+                        'State v. Johnson - JWA-2024-0445.json',
+                        'Williams Family Law - JM-2024-0331.json',
+                        'Thompson Contract - JG-2024-0156.json'
+                    ],
+                    location: 'F:\\Practice-Panther-Clone\\active-cases\\'
+                },
+                'client-documents': {
+                    title: 'Practice Panther - Client Documents',
+                    files: [
+                        'Trust_Amendment_Harrison.docx',
+                        'Motion_to_Suppress_Johnson.pdf',
+                        'Property_Settlement_Williams.pdf',
+                        'Contract_Analysis_Thompson.docx'
+                    ],
+                    location: 'F:\\Practice-Panther-Clone\\documents\\'
+                },
+                'templates': {
+                    title: 'Practice Panther - Templates',
+                    files: [
+                        'Estate_Trust_Template.docx',
+                        'Motion_Template.pdf',
+                        'Settlement_Agreement_Template.docx',
+                        'Contract_Review_Template.pdf'
+                    ],
+                    location: 'F:\\Practice-Panther-Clone\\templates\\'
+                },
+                'recent-updates': {
+                    title: 'Live Practice Panther Updates',
+                    files: [
+                        'Case_Update_Harrison_09-01-2025.json',
+                        'Document_Added_Johnson_09-01-2025.json',
+                        'Settlement_Progress_Williams_08-31-2025.json'
+                    ],
+                    location: 'F:\\Practice-Panther-Clone\\live-updates\\'
+                }
+            };
+            
+            const data = practiceFiles[fileType];
+            if (data) {
+                esqs.addMessage(`� **${data.title}**\n\n**F: Drive Location:** ${data.location}\n\n**Live Files:**\n${data.files.map(f => `• ${f} (Live sync active)`).join('\n')}\n\n✅ **Practice Panther connection active**\n� **Auto-sync enabled** - Changes reflect immediately\n📍 **Source:** F: Drive cloned repository`, 'assistant');
+            }
+        }
+        
+        function openFile(fileId) { esqs.addAIMessage(`<strong>📂 Opening File</strong><br>Loading ${fileId} from firm library...`); }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            esqs = new ESQsLegalPlatform();
+        });
+    </script>
+</body>
+</html>

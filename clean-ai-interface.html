@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESQs AI Conversational Interface</title>
+    <style>
+        /* ===================================================================================== */
+        /* ESQs AI CONVERSATIONAL INTERFACE - CLEAN DESIGN */
+        /* ===================================================================================== */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .esqs-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 280px;
+            height: 100vh;
+            gap: 1px;
+            background: #cbd5e1;
+        }
+
+        /* ===================================================================================== */
+        /* LEFT SIDEBAR - CASE ESSENTIALS */
+        /* ===================================================================================== */
+        
+        .left-sidebar {
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .case-essentials {
+            padding: 20px;
+        }
+
+        .sidebar-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .case-detail {
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .detail-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .detail-content {
+            font-size: 13px;
+            color: #1e293b;
+            line-height: 1.4;
+        }
+
+        .issues-list {
+            list-style: none;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .issues-list li {
+            margin-bottom: 4px;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .issues-list li:before {
+            content: "•";
+            color: #ef4444;
+            position: absolute;
+            left: 0;
+        }
+
+        .doc-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .doc-links button {
+            padding: 6px 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .doc-links button:hover {
+            background: #2563eb;
+        }
+
+        /* ===================================================================================== */
+        /* MAIN INTERFACE AREA */
+        /* ===================================================================================== */
+        
+        .main-interface {
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-header {
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .platform-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #60a5fa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .platform-name:hover {
+            color: #93c5fd;
+        }
+
+        .current-case {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .current-case:hover {
+            color: #cbd5e1;
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .settings-btn {
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.2s;
+        }
+
+        .settings-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .user-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+
+        .chat-history-bar {
+            background: #f1f5f9;
+            padding: 12px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages.drag-over {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px dashed #3b82f6;
+        }
+
+        /* ===================================================================================== */
+        /* MESSAGE STYLES */
+        /* ===================================================================================== */
+        
+        .ai-message, .user-message {
+            display: flex;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .ai-avatar, .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .ai-avatar {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            margin-right: 12px;
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            margin-left: 12px;
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .ai-message.welcome .message-content {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+        }
+
+        .message-content h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1e293b;
+        }
+
+        .message-content p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #475569;
+        }
+
+        .user-message .message-content p {
+            color: white;
+        }
+
+        .message-content ul {
+            list-style: none;
+            margin-bottom: 12px;
+        }
+
+        .message-content li {
+            padding: 4px 0;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .message-content strong {
+            color: #1e293b;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .message-type {
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .ai-thinking {
+            font-style: italic;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ===================================================================================== */
+        /* QUICK ACTION BUTTONS */
+        /* ===================================================================================== */
+        
+        .quick-actions, .research-actions, .file-actions, .pp-section, .template-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-actions button, .research-actions button, .file-actions button, 
+        .pp-section button, .template-options button {
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .quick-actions button:hover, .research-actions button:hover, .file-actions button:hover,
+        .pp-section button:hover, .template-options button:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .capability-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .capability {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .cap-icon {
+            font-size: 18px;
+        }
+
+        .cap-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        /* ===================================================================================== */
+        /* INPUT AREA */
+        /* ===================================================================================== */
+        
+        .chat-input-area {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 20px 24px;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .input-container:focus-within {
+            border-color: #3b82f6;
+        }
+
+        .mic-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: #1e293b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+        }
+
+        .mic-button:hover {
+            background: #334155;
+            transform: scale(1.05);
+        }
+
+        .mic-button.listening {
+            background: #dc2626;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .mic-icon {
+            font-size: 16px;
+        }
+
+        .mic-status {
+            font-size: 9px;
+            font-weight: 600;
+            color: #ff0000;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #1e293b;
+            outline: none;
+            padding: 8px 12px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .send-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .send-button:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .input-helpers {
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* ===================================================================================== */
+        /* RIGHT SIDEBAR - CALENDAR & FILES */
+        /* ===================================================================================== */
+        
+        .right-sidebar {
+            background: white;
+            border-left: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .calendar-section, .case-tasks, .recent-files {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .calendar-event, .task-item, .file-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calendar-event:hover, .task-item:hover, .file-item:hover {
+            background: #f1f5f9;
+            transform: translateX(2px);
+        }
+
+        .calendar-event.today {
+            border-left-color: #10b981;
+        }
+
+        .calendar-event.tomorrow {
+            border-left-color: #f59e0b;
+        }
+
+        .calendar-event.upcoming {
+            border-left-color: #3b82f6;
+        }
+
+        .event-time, .task-due, .file-date {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .event-title, .task-title, .file-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 4px 0;
+        }
+
+        .event-type {
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .task-priority.red { background: #ef4444; }
+        .task-priority.yellow { background: #f59e0b; }
+        .task-priority.green { background: #10b981; }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        /* ===================================================================================== */
+        /* VOICE OVERLAY */
+        /* ===================================================================================== */
+        
+        .voice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .voice-animation {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .voice-indicator {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            margin: 0 auto 20px;
+            animation: voicePulse 1s infinite ease-in-out;
+        }
+
+        @keyframes voicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .voice-animation p {
+            font-size: 18px;
+            color: #1e293b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .voice-animation button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* ===================================================================================== */
+        /* RESPONSIVE DESIGN */
+        /* ===================================================================================== */
+        
+        @media (max-width: 1200px) {
+            .esqs-container {
+                grid-template-columns: 250px 1fr 250px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .esqs-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+            
+            .left-sidebar, .right-sidebar {
+                display: none;
+            }
+        }
+
+        /* ===================================================================================== */
+        /* CUSTOM SCROLLBARS */
+        /* ===================================================================================== */
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="esqs-container">
+        <!-- Left Sidebar - Case Essentials -->
+        <div class="left-sidebar">
+            <div class="case-essentials">
+                <h3 class="sidebar-title">Case Essentials</h3>
+                <div class="case-info" id="case-info">
+                    <!-- Dynamic case information will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interface Area -->
+        <div class="main-interface">
+            <!-- Top Header -->
+            <div class="top-header">
+                <div class="platform-info">
+                    <span class="platform-name" onclick="startNewChat()">ESQs Platform</span>
+                    <span class="current-case" id="current-case" onclick="startCaseChat()">Case: Johnson v. Industries</span>
+                </div>
+                <div class="user-controls">
+                    <span class="settings-btn" onclick="openSettings()">⚙️</span>
+                    <span class="user-name">Attorney Smith</span>
+                </div>
+            </div>
+
+            <!-- Chat History Bar -->
+            <div class="chat-history-bar" id="chat-history-bar">
+                Recent: Legal Research | Document Review | Time Entry | Practice Panther Sync | Template Creation
+            </div>
+
+            <!-- Main Chat Interface -->
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="ai-message welcome">
+                        <div class="ai-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>Hello! I'm your ESQs AI assistant. I can help with:</p>
+                            <ul>
+                                <li>📄 <strong>Documents:</strong> Drop files here for analysis</li>
+                                <li>🔍 <strong>Research:</strong> Ask me legal questions</li>
+                                <li>🔗 <strong>Practice Panther:</strong> Time entries, calendar, files</li>
+                                <li>📋 <strong>Templates:</strong> Generate legal documents</li>
+                                <li>⚖️ <strong>Case Analysis:</strong> Strategic insights</li>
+                            </ul>
+                            <p>Just type, speak, or drop files to get started!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <button class="mic-button" id="mic-button" onclick="toggleVoice()">
+                            <span class="mic-icon">🎤</span>
+                            <span class="mic-status" id="mic-status">OFF</span>
+                        </button>
+                        <input type="text" 
+                               class="chat-input" 
+                               id="chat-input" 
+                               placeholder="Ask me anything: research, documents, Practice Panther, templates..."
+                               onkeypress="handleKeyPress(event)">
+                        <button class="send-button" onclick="sendMessage()">➤</button>
+                    </div>
+                    <div class="input-helpers">
+                        <span class="helper-text">💡 Try: "Research contract law" or "Add time entry" or drag documents here</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Calendar & Recent Files -->
+        <div class="right-sidebar">
+            <!-- Google Calendar Events -->
+            <div class="calendar-section">
+                <h3 class="sidebar-title">📅 Upcoming Events</h3>
+                <div class="calendar-events" id="calendar-events">
+                    <!-- Dynamic calendar events will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Case-Specific Tasks -->
+            <div class="case-tasks">
+                <h3 class="sidebar-title">⚖️ Case Deadlines</h3>
+                <div class="task-list" id="case-tasks">
+                    <!-- Dynamic case tasks will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Recent Files -->
+            <div class="recent-files">
+                <h3 class="sidebar-title">📁 Recent Files</h3>
+                <div class="file-list" id="recent-files">
+                    <!-- Recent files will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Status Overlay -->
+    <div class="voice-overlay" id="voice-overlay" style="display: none;">
+        <div class="voice-animation">
+            <div class="voice-indicator"></div>
+            <p>Listening... Speak now</p>
+            <button onclick="stopListening()">Stop</button>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================================================
+        // ESQs AI CONVERSATIONAL INTERFACE - JAVASCRIPT
+        // =====================================================================================
+        
+        class ESQsAIInterface {
+            constructor() {
+                this.fDriveBase = 'F:\\ESQs-Platform-MOBILE-ONLINE';
+                this.currentCase = null;
+                this.isListening = false;
+                this.chatHistory = [];
+                this.recentFiles = [];
+                
+                console.log('🤖 ESQs AI Conversational Interface - F: Drive Exclusive');
+                console.log('✅ Single chat for everything: docs, research, Practice Panther');
+                console.log('✅ Voice + text + drag & drop all in one interface');
+                
+                this.initializeInterface();
+            }
+
+            initializeInterface() {
+                this.setupVoiceInterface();
+                this.setupChatInterface();
+                this.setupDragDrop();
+                this.initializeCurrentCase();
+            }
+
+            setupVoiceInterface() {
+                // Initialize speech recognition if available
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.handleVoiceInput(transcript);
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.stopListening();
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.stopListening();
+                    };
+                }
+            }
+
+            setupChatInterface() {
+                // Setup drag and drop on chat container
+                const chatContainer = document.querySelector('.chat-container');
+                
+                chatContainer.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    chatContainer.classList.add('drag-over');
+                });
+                
+                chatContainer.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    chatContainer.classList.remove('drag-over');
+                });
+                
+                chatContainer.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    chatContainer.classList.remove('drag-over');
+                    this.handleFileDrop(e);
+                });
+            }
+
+            handleFileDrop(event) {
+                const files = Array.from(event.dataTransfer.files);
+                
+                if (files.length > 0) {
+                    const file = files[0];
+                    
+                    this.addUserMessage(`📄 Dropped file: ${file.name}`, 'file');
+                    
+                    // Process file with AI
+                    this.addAIMessage(`
+                        <div class="file-analysis">
+                            <h4>📄 Analyzing: ${file.name}</h4>
+                            <p>🔍 <strong>File Type:</strong> ${this.getFileType(file.name)}</p>
+                            <p>📏 <strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <p>📂 <strong>Suggested F: Drive Location:</strong> F:\\ESQs-Platform-MOBILE-ONLINE\\documents\\${this.suggestFolder(file.name)}</p>
+                            <p>🔗 <strong>Practice Panther:</strong> ${this.shouldSyncToPP(file.name) ? 'Will sync to current case' : 'No sync needed'}</p>
+                            
+                            <div class="file-actions">
+                                <button onclick="esqsAI.saveFileToFDrive('${file.name}')">💾 Save to F: Drive</button>
+                                <button onclick="esqsAI.analyzeDocument('${file.name}')">🔍 Analyze Content</button>
+                                <button onclick="esqsAI.createTemplate('${file.name}')">📋 Create Template</button>
+                            </div>
+                        </div>
+                    `);
+                }
+            }
+
+            getFileType(filename) {
+                const ext = filename.toLowerCase().split('.').pop();
+                const types = {
+                    'pdf': 'PDF Document',
+                    'docx': 'Word Document',
+                    'doc': 'Word Document',
+                    'txt': 'Text File',
+                    'rtf': 'Rich Text',
+                    'xlsx': 'Excel Spreadsheet',
+                    'pptx': 'PowerPoint'
+                };
+                return types[ext] || 'Document';
+            }
+
+            suggestFolder(filename) {
+                const name = filename.toLowerCase();
+                if (name.includes('contract')) return 'contracts';
+                if (name.includes('motion')) return 'motions';
+                if (name.includes('brief')) return 'briefs';
+                if (name.includes('discovery')) return 'discovery';
+                if (name.includes('research')) return 'research';
+                return 'general';
+            }
+
+            shouldSyncToPP(filename) {
+                const syncTypes = ['pdf', 'docx', 'doc'];
+                const ext = filename.toLowerCase().split('.').pop();
+                return syncTypes.includes(ext);
+            }
+
+            initializeCurrentCase() {
+                this.loadCaseEssentials();
+                this.loadCalendarEvents();
+                this.loadCaseTasks();
+                this.loadRecentFiles();
+            }
+
+            loadCaseEssentials() {
+                const caseInfo = document.getElementById('case-info');
+                caseInfo.innerHTML = `
+                    <div class="case-detail">
+                        <h4 class="detail-title">👥 Parties</h4>
+                        <p class="detail-content">Johnson Industries vs. Smith Corp</p>
+                    </div>
+                    
+                    <div class="case-detail">
+                        <h4 class="detail-title">⚖️ Action Type</h4>
+                        <p class="detail-content">Contract Dispute</p>
+                    </div>
+                    
+                    <div class="case-detail">
+                        <h4 class="detail-title">📅 Client Since</h4>
+                        <p class="detail-content">March 2024 (6 months)</p>
+                    </div>
+                    
+                    <div class="case-detail">
+                        <h4 class="detail-title">🏛️ Next Court Event</h4>
+                        <p class="detail-content">Hearing - Sept 15, 2025</p>
+                    </div>
+                    
+                    <div class="case-detail">
+                        <h4 class="detail-title">⚡ Key Issues</h4>
+                        <ul class="issues-list">
+                            <li>Breach of contract terms</li>
+                            <li>Payment schedule disputes</li>
+                            <li>Termination clause interpretation</li>
+                            <li>Damages calculation</li>
+                            <li>Force majeure applicability</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="case-detail">
+                        <h4 class="detail-title">📋 Pre-Hearing Docs</h4>
+                        <div class="doc-links">
+                            <button onclick="esqsAI.createPretrialMemo()">📝 Pretrial Memo</button>
+                            <button onclick="esqsAI.createWitnesslist()">👥 Witness List</button>
+                            <button onclick="esqsAI.createExhibitList()">📁 Exhibit List</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            loadCalendarEvents() {
+                const calendarEvents = document.getElementById('calendar-events');
+                calendarEvents.innerHTML = `
+                    <div class="calendar-event today">
+                        <div class="event-time">2:00 PM</div>
+                        <div class="event-title">Client Meeting - Johnson</div>
+                        <div class="event-type">📞 Video Call</div>
+                    </div>
+                    
+                    <div class="calendar-event tomorrow">
+                        <div class="event-time">10:00 AM</div>
+                        <div class="event-title">Deposition - Smith Corp</div>
+                        <div class="event-type">🏛️ Court Reporter</div>
+                    </div>
+                    
+                    <div class="calendar-event upcoming">
+                        <div class="event-time">Sept 15 - 9:00 AM</div>
+                        <div class="event-title">Motion Hearing</div>
+                        <div class="event-type">⚖️ Courtroom 3A</div>
+                    </div>
+                `;
+            }
+
+            loadCaseTasks() {
+                const caseTasks = document.getElementById('case-tasks');
+                caseTasks.innerHTML = `
+                    <div class="task-item critical">
+                        <div class="task-priority red"></div>
+                        <div class="task-content">
+                            <div class="task-title">File Motion Response</div>
+                            <div class="task-due">Due: Sept 3 (2 days)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item warning">
+                        <div class="task-priority yellow"></div>
+                        <div class="task-content">
+                            <div class="task-title">Discovery Responses</div>
+                            <div class="task-due">Due: Sept 8 (1 week)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item normal">
+                        <div class="task-priority green"></div>
+                        <div class="task-content">
+                            <div class="task-title">Witness Prep</div>
+                            <div class="task-due">Due: Sept 12 (2 weeks)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item normal">
+                        <div class="task-priority green"></div>
+                        <div class="task-content">
+                            <div class="task-title">Expert Report Review</div>
+                            <div class="task-due">Due: Sept 20 (3 weeks)</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            loadRecentFiles() {
+                const recentFiles = document.getElementById('recent-files');
+                recentFiles.innerHTML = `
+                    <div class="file-item" onclick="esqsAI.openFile('contract-v3')">
+                        <div class="file-icon">📄</div>
+                        <div class="file-info">
+                            <div class="file-name">Contract Analysis v3</div>
+                            <div class="file-date">Aug 30, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item" onclick="esqsAI.openFile('motion-v2')">
+                        <div class="file-icon">⚖️</div>
+                        <div class="file-info">
+                            <div class="file-name">2nd Motion to Enforce v2</div>
+                            <div class="file-date">Aug 29, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item" onclick="esqsAI.openFile('discovery-v5')">
+                        <div class="file-icon">🔍</div>
+                        <div class="file-info">
+                            <div class="file-name">5th Discovery Request v1</div>
+                            <div class="file-date">Aug 28, 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="file-item" onclick="esqsAI.openFile('research-memo')">
+                        <div class="file-icon">📚</div>
+                        <div class="file-info">
+                            <div class="file-name">Research Memo - Force Majeure</div>
+                            <div class="file-date">Aug 27, 2025</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            addUserMessage(message, type) {
+                const chatMessages = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'user-message';
+                
+                const typeIcon = type === 'voice' ? '🎤' : type === 'file' ? '📄' : '💬';
+                
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <span class="message-type">${typeIcon}</span>
+                        <p>${message}</p>
+                        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <div class="user-avatar">👤</div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            addAIMessage(message, type = 'response') {
+                const chatMessages = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'ai-message';
+                
+                messageDiv.innerHTML = `
+                    <div class="ai-avatar">🤖</div>
+                    <div class="message-content">
+                        ${message}
+                        <span class="message-time">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async processAIRequest(request) {
+                // Show AI thinking
+                this.addAIMessage('<div class="ai-thinking">🤖 Analyzing your request...</div>');
+                
+                // Simulate AI processing
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Remove thinking message
+                const thinkingMessage = document.querySelector('.ai-thinking');
+                if (thinkingMessage) {
+                    thinkingMessage.parentElement.parentElement.remove();
+                }
+                
+                // Process different types of requests
+                if (this.isDocumentRequest(request)) {
+                    this.handleDocumentRequest(request);
+                } else if (this.isResearchRequest(request)) {
+                    this.handleResearchRequest(request);
+                } else if (this.isPracticePartnerRequest(request)) {
+                    this.handlePracticePartnerRequest(request);
+                } else if (this.isTemplateRequest(request)) {
+                    this.handleTemplateRequest(request);
+                } else {
+                    this.handleGeneralRequest(request);
+                }
+            }
+
+            // Helper methods for AI processing
+            isDocumentRequest(request) {
+                const docKeywords = ['document', 'file', 'template', 'contract', 'motion', 'brief'];
+                return docKeywords.some(keyword => request.toLowerCase().includes(keyword));
+            }
+
+            isResearchRequest(request) {
+                const researchKeywords = ['research', 'case law', 'statute', 'legal', 'precedent', 'law'];
+                return researchKeywords.some(keyword => request.toLowerCase().includes(keyword));
+            }
+
+            isPracticePartnerRequest(request) {
+                const ppKeywords = ['time entry', 'calendar', 'practice panther', 'billing', 'client'];
+                return ppKeywords.some(keyword => request.toLowerCase().includes(keyword));
+            }
+
+            isTemplateRequest(request) {
+                const templateKeywords = ['template', 'generate', 'create document', 'draft'];
+                return templateKeywords.some(keyword => request.toLowerCase().includes(keyword));
+            }
+
+            handleDocumentRequest(request) {
+                this.addAIMessage(`
+                    <div class="document-response">
+                        <h4>📄 Document Assistant</h4>
+                        <p>I can help you with document management on F: drive. What would you like to do?</p>
+                        
+                        <div class="quick-actions">
+                            <button onclick="esqsAI.searchDocuments()">🔍 Search Documents</button>
+                            <button onclick="esqsAI.createNewDocument()">📝 Create New</button>
+                            <button onclick="esqsAI.showRecentFiles()">📁 Recent Files</button>
+                            <button onclick="esqsAI.organizeFDrive()">🗂️ Organize F: Drive</button>
+                        </div>
+                    </div>
+                `);
+            }
+
+            handleResearchRequest(request) {
+                this.addAIMessage(`
+                    <div class="research-response">
+                        <h4>🔍 Legal Research Assistant</h4>
+                        <p>I'll research "${request}" for you...</p>
+                        
+                        <div class="research-results">
+                            <h5>📚 Research Summary:</h5>
+                            <ul>
+                                <li>✅ Found 23 relevant cases</li>
+                                <li>✅ 8 applicable statutes identified</li>
+                                <li>✅ 3 recent precedents (2024-2025)</li>
+                            </ul>
+                            
+                            <div class="research-actions">
+                                <button onclick="esqsAI.showFullResearch()">📖 View Full Research</button>
+                                <button onclick="esqsAI.createResearchMemo()">📝 Create Memo</button>
+                                <button onclick="esqsAI.saveToFDrive()">💾 Save to F: Drive</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            handlePracticePartnerRequest(request) {
+                this.addAIMessage(`
+                    <div class="pp-response">
+                        <h4>🔗 Practice Panther Integration</h4>
+                        <p>Connected to Practice Panther - F: Drive Exclusive</p>
+                        
+                        <div class="pp-options">
+                            <div class="pp-section">
+                                <h5>⏰ Time Entries</h5>
+                                <button onclick="esqsAI.addTimeEntry()">+ Add Time Entry</button>
+                                <button onclick="esqsAI.viewTimeEntries()">📊 View Entries</button>
+                            </div>
+                            
+                            <div class="pp-section">
+                                <h5>📅 Calendar</h5>
+                                <button onclick="esqsAI.showPPCalendar()">📅 View Calendar</button>
+                                <button onclick="esqsAI.addEvent()">+ Add Event</button>
+                            </div>
+                            
+                            <div class="pp-section">
+                                <h5>📁 Case Files</h5>
+                                <button onclick="esqsAI.syncFiles()">🔄 Sync F: Drive Files</button>
+                                <button onclick="esqsAI.uploadToPP()">⬆️ Upload to PP</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            handleTemplateRequest(request) {
+                this.addAIMessage(`
+                    <div class="template-response">
+                        <h4>📋 Template Generator</h4>
+                        <p>I'll help you create templates from F: drive documents...</p>
+                        
+                        <div class="template-options">
+                            <h5>Available Templates:</h5>
+                            <div class="template-grid">
+                                <button onclick="esqsAI.generateContract()">📄 Contract</button>
+                                <button onclick="esqsAI.generateMotion()">⚖️ Motion</button>
+                                <button onclick="esqsAI.generateBrief()">📚 Brief</button>
+                                <button onclick="esqsAI.generateDiscovery()">🔍 Discovery</button>
+                            </div>
+                            
+                            <div class="custom-template">
+                                <input type="text" placeholder="Describe your custom template..." id="custom-template-input">
+                                <button onclick="esqsAI.generateCustomTemplate()">✨ Generate Custom</button>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            handleGeneralRequest(request) {
+                this.addAIMessage(`
+                    <div class="general-response">
+                        <h4>🤖 ESQs AI Assistant</h4>
+                        <p>I understand you're asking about: "${request}"</p>
+                        <p>I can help you with legal work in these areas:</p>
+                        
+                        <div class="capability-grid">
+                            <div class="capability">
+                                <span class="cap-icon">📄</span>
+                                <span class="cap-text">Document Management</span>
+                            </div>
+                            <div class="capability">
+                                <span class="cap-icon">🔍</span>
+                                <span class="cap-text">Legal Research</span>
+                            </div>
+                            <div class="capability">
+                                <span class="cap-icon">🔗</span>
+                                <span class="cap-text">Practice Panther</span>
+                            </div>
+                            <div class="capability">
+                                <span class="cap-icon">📋</span>
+                                <span class="cap-text">Template Creation</span>
+                            </div>
+                        </div>
+                        
+                        <p>Would you like me to help with any of these areas?</p>
+                    </div>
+                `);
+            }
+
+            // Placeholder methods for button actions
+            saveFileToFDrive(filename) { this.addAIMessage(`💾 Saving ${filename} to F: Drive...`); }
+            analyzeDocument(filename) { this.addAIMessage(`🔍 Analyzing ${filename}...`); }
+            createTemplate(filename) { this.addAIMessage(`📋 Creating template from ${filename}...`); }
+            createPretrialMemo() { this.addAIMessage(`📝 Creating pretrial memo...`); }
+            createWitnesslist() { this.addAIMessage(`👥 Creating witness list...`); }
+            createExhibitList() { this.addAIMessage(`📁 Creating exhibit list...`); }
+            openFile(fileId) { this.addAIMessage(`📂 Opening ${fileId}...`); }
+            searchDocuments() { this.addAIMessage(`🔍 Searching F: Drive documents...`); }
+            createNewDocument() { this.addAIMessage(`📝 Creating new document...`); }
+            showRecentFiles() { this.addAIMessage(`📁 Showing recent files...`); }
+            organizeFDrive() { this.addAIMessage(`🗂️ Organizing F: Drive...`); }
+            showFullResearch() { this.addAIMessage(`📖 Displaying full research results...`); }
+            createResearchMemo() { this.addAIMessage(`📝 Creating research memo...`); }
+            saveToFDrive() { this.addAIMessage(`💾 Saving to F: Drive...`); }
+            addTimeEntry() { this.addAIMessage(`⏰ Adding time entry to Practice Panther...`); }
+            viewTimeEntries() { this.addAIMessage(`📊 Viewing time entries...`); }
+            showPPCalendar() { this.addAIMessage(`📅 Showing Practice Panther calendar...`); }
+            addEvent() { this.addAIMessage(`📅 Adding calendar event...`); }
+            syncFiles() { this.addAIMessage(`🔄 Syncing F: Drive files...`); }
+            uploadToPP() { this.addAIMessage(`⬆️ Uploading to Practice Panther...`); }
+            generateContract() { this.addAIMessage(`📄 Generating contract template...`); }
+            generateMotion() { this.addAIMessage(`⚖️ Generating motion template...`); }
+            generateBrief() { this.addAIMessage(`📚 Generating brief template...`); }
+            generateDiscovery() { this.addAIMessage(`🔍 Generating discovery template...`); }
+            generateCustomTemplate() { 
+                const input = document.getElementById('custom-template-input');
+                this.addAIMessage(`✨ Generating custom template: ${input.value}...`);
+                input.value = '';
+            }
+        }
+
+        // Global functions for HTML onclick events
+        let esqsAI;
+
+        function toggleVoice() {
+            if (esqsAI.isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            if (esqsAI.recognition) {
+                esqsAI.isListening = true;
+                
+                // Update UI
+                const micButton = document.getElementById('mic-button');
+                const micStatus = document.getElementById('mic-status');
+                const voiceOverlay = document.getElementById('voice-overlay');
+                
+                micButton.classList.add('listening');
+                micStatus.textContent = 'ON';
+                micStatus.style.color = '#00ff00';
+                voiceOverlay.style.display = 'flex';
+                
+                // Start recognition
+                esqsAI.recognition.start();
+                
+                console.log('🎤 Voice recognition started');
+            }
+        }
+
+        function stopListening() {
+            if (esqsAI.recognition && esqsAI.isListening) {
+                esqsAI.isListening = false;
+                
+                // Update UI
+                const micButton = document.getElementById('mic-button');
+                const micStatus = document.getElementById('mic-status');
+                const voiceOverlay = document.getElementById('voice-overlay');
+                
+                micButton.classList.remove('listening');
+                micStatus.textContent = 'OFF';
+                micStatus.style.color = '#ff0000';
+                voiceOverlay.style.display = 'none';
+                
+                // Stop recognition
+                esqsAI.recognition.stop();
+                
+                console.log('🎤 Voice recognition stopped');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                esqsAI.addUserMessage(message, 'text');
+                esqsAI.processAIRequest(message);
+                input.value = '';
+            }
+        }
+
+        function startNewChat() {
+            esqsAI.addAIMessage('🆕 Starting new chat session. How can I help you today?');
+        }
+
+        function startCaseChat() {
+            esqsAI.addAIMessage('⚖️ Opening case-specific chat for Johnson v. Industries. What would you like to work on?');
+        }
+
+        function openSettings() {
+            esqsAI.addAIMessage('⚙️ Settings panel opened. You can configure AI preferences, F: Drive settings, and Practice Panther integration here.');
+        }
+
+        // Initialize ESQs AI Interface when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            esqsAI = new ESQsAIInterface();
+            console.log('🤖 ESQs AI Conversational Interface Ready!');
+            console.log('✅ Clean UI with single chat for everything');
+            console.log('✅ Voice + text + drag & drop integration');
+            console.log('✅ F: Drive exclusive operation');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESQs Legal Intelligence Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #0a0e16;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #1a1a2e, #16213e);
+            border-bottom: 1px solid #2a2a3e;
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .platform-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .platform-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00d4ff;
+            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .platform-name:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .current-case {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffd700;
+            cursor: pointer;
+            font-family: Georgia, 'Times New Roman', serif;
+            transition: all 0.2s ease;
+        }
+
+        .current-case:hover {
+            color: #ffffff;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .settings-btn, .user-dropdown {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .settings-btn:hover, .user-dropdown:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+
+        .user-dropdown {
+            font-weight: 500;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 280px;
+            height: calc(100vh - 60px);
+        }
+
+        /* Left Panel - Case Info */
+        .case-panel {
+            background: #0f1419;
+            border-right: 1px solid #2a2a3e;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .case-section {
+            margin-bottom: 24px;
+        }
+
+        .case-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .parties-list {
+            margin-bottom: 16px;
+        }
+
+        .party {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2a3e;
+            font-size: 13px;
+        }
+
+        .party-name {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .party-role {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .case-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #1a1a2e;
+        }
+
+        .detail-label {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .contention-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-left: 3px solid #00d4ff;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .priority-docs {
+            margin-top: 16px;
+        }
+
+        .priority-doc {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin: 4px 0;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #ffd700;
+            transition: all 0.2s ease;
+        }
+
+        .priority-doc:hover {
+            background: rgba(255, 215, 0, 0.2);
+            transform: translateX(4px);
+        }
+
+        /* Center Chat Area */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            background: #131821;
+            margin: 12px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .chat-history-tabs {
+            background: #1a1a2e;
+            border-bottom: 1px solid #2a2a3e;
+            padding: 12px 20px;
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .chat-tab {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #2a2a3e;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            color: #888;
+            transition: all 0.2s ease;
+        }
+
+        .chat-tab.active {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border-color: #00d4ff;
+        }
+
+        .chat-tab:hover:not(.active) {
+            background: rgba(0, 212, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.ai {
+            background: #2a2a3e;
+            color: #ffffff;
+            align-self: flex-start;
+            border: 1px solid #3a3a4e;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-area {
+            border-top: 1px solid #2a2a3e;
+            padding: 16px 20px;
+            background: #1a1a2e;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #3a3a4e;
+            border-radius: 24px;
+            padding: 12px 20px;
+            font-size: 14px;
+            background: #2a2a3e;
+            color: #ffffff;
+            resize: none;
+            outline: none;
+            min-height: 48px;
+            max-height: 120px;
+        }
+
+        .chat-input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+        }
+
+        .chat-input::placeholder {
+            color: #666;
+        }
+
+        .mic-btn {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .mic-btn.off {
+            background: rgba(68, 170, 68, 0.2);
+            color: #44aa44;
+            border: 2px solid #44aa44;
+        }
+
+        .mic-btn.on {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        .mic-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .mic-btn.off:hover {
+            box-shadow: 0 0 15px rgba(68, 170, 68, 0.5);
+        }
+
+        .mic-btn.on:hover {
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        /* Right Panel - Calendar & Files */
+        .info-panel {
+            background: #131821;
+            border-left: 1px solid #2a2a3e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-section {
+            padding: 16px;
+            border-bottom: 1px solid #2a2a3e;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .calendar-event {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-event.critical {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff6666;
+        }
+
+        .calendar-event.warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+            color: #ffdb4d;
+        }
+
+        .calendar-event.normal {
+            background: rgba(0, 212, 255, 0.2);
+            border: 1px solid #00d4ff;
+            color: #33ddff;
+        }
+
+        .event-time {
+            font-weight: 600;
+            min-width: 60px;
+            color: #00d4ff;
+        }
+
+        .recent-file {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            margin: 4px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            background: rgba(42, 42, 62, 0.5);
+        }
+
+        .recent-file:hover {
+            background: #2a2a3e;
+            transform: translateX(2px);
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00d4ff;
+            font-size: 10px;
+            border: 1px solid #00d4ff;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-version {
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        .drop-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(37, 99, 235, 0.1);
+            border: 2px dashed #2563eb;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #2563eb;
+            z-index: 1000;
+        }
+
+        .drop-zone.active {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 260px 1fr 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .case-panel, .info-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="platform-info">
+            <div class="platform-name" onclick="startNewChat()">ESQs Legal Intelligence</div>
+            <div class="current-case" onclick="startCaseChat()" id="current-case">Harrison Estate Planning - TRC-2024-0892</div>
+        </div>
+        <div class="header-controls">
+            <button class="settings-btn" onclick="openSettings()">⚙️ Settings</button>
+            <select class="user-dropdown" onchange="switchUser()" title="Select User">
+                <option value="travis">Travis R. Christiansen</option>
+                <option value="john">John W Adams</option>
+                <option value="josephine">Josephine Millar</option>
+                <option value="jordan">Jordan Gubler</option>
+                <option value="jessica">Jessica Byergo</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Left Panel - Case Information -->
+        <div class="case-panel">
+            <div class="case-section">
+                <div class="case-section-title">Parties</div>
+                <div class="parties-list">
+                    <div class="party">
+                        <div class="party-name">Harrison Family Trust</div>
+                        <div class="party-role">Petitioner</div>
+                    </div>
+                    <div class="party">
+                        <div class="party-name">State of Utah</div>
+                        <div class="party-role">Respondent</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="case-section">
+                <div class="case-section-title">Case Details</div>
+                <div class="case-detail">
+                    <span class="detail-label">Type:</span>
+                    <span class="detail-value">Estate Planning</span>
+                </div>
+                <div class="case-detail">
+                    <span class="detail-label">Client Since:</span>
+                    <span class="detail-value">Jan 2023</span>
+                </div>
+                <div class="case-detail">
+                    <span class="detail-label">Court:</span>
+                    <span class="detail-value">3rd District</span>
+                </div>
+                <div class="case-detail">
+                    <span class="detail-label">Next Event:</span>
+                    <span class="detail-value">Trust Review</span>
+                </div>
+            </div>
+
+            <div class="case-section">
+                <div class="case-section-title">Key Issues</div>
+                <div class="contention-item">Trust distribution disputes</div>
+                <div class="contention-item">Tax implications review</div>
+                <div class="contention-item">Beneficiary designations</div>
+                <div class="contention-item">Asset valuation concerns</div>
+                <div class="contention-item">Estate tax planning</div>
+            </div>
+
+            <div class="case-section">
+                <div class="case-section-title">Priority Documents</div>
+                <div class="priority-docs">
+                    <div class="priority-doc" onclick="startDocument('trust-amendment')">
+                        📄 Trust Amendment v3
+                    </div>
+                    <div class="priority-doc" onclick="startDocument('will-update')">
+                        📝 Will Update Draft
+                    </div>
+                    <div class="priority-doc" onclick="startDocument('tax-analysis')">
+                        📊 Tax Analysis Report
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Chat Area -->
+        <div class="chat-area">
+            <div class="chat-history-tabs" id="chat-tabs">
+                <div class="chat-tab active" onclick="switchChat('main')">Main Chat</div>
+                <div class="chat-tab" onclick="switchChat('harrison-trust')">Harrison Trust.pdf</div>
+                <div class="chat-tab" onclick="switchChat('will-draft')">Will Draft v2.docx</div>
+                <div class="chat-tab" onclick="switchChat('tax-memo')">Tax Memo.pdf</div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    <strong>ESQs AI Assistant</strong><br><br>
+                    Welcome! I'm your comprehensive legal AI assistant with access to:<br><br>
+                    🎤 <strong>Voice Commands</strong> - Just click the mic and speak<br>
+                    📁 <strong>Document Analysis</strong> - Drag & drop any file into this chat<br>
+                    📚 <strong>Legal Research</strong> - Case law, statutes, precedents<br>
+                    ⚖️ <strong>Practice Panther</strong> - Time entries, calendar, client files<br>
+                    📄 <strong>Document Templates</strong> - Automated legal document generation<br><br>
+                    How can I help with the Harrison Estate Planning matter today?
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="input-container">
+                    <textarea 
+                        class="chat-input" 
+                        id="chat-input" 
+                        placeholder="Ask about documents, research, Practice Panther, templates, or drag & drop files here..."
+                        onkeydown="handleKeyDown(event)"
+                    ></textarea>
+                    <button class="mic-btn off" id="mic-btn" onclick="toggleMic()">🎤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Calendar & Recent Files -->
+        <div class="info-panel">
+            <div class="panel-section">
+                <div class="panel-title">📅 Upcoming Events</div>
+                <div class="calendar-event critical">
+                    <div class="event-time">Sep 5</div>
+                    <div>Trust Review Meeting</div>
+                </div>
+                <div class="calendar-event warning">
+                    <div class="event-time">Sep 8</div>
+                    <div>Document Filing Deadline</div>
+                </div>
+                <div class="calendar-event normal">
+                    <div class="event-time">Sep 12</div>
+                    <div>Client Check-in Call</div>
+                </div>
+                <div class="calendar-event normal">
+                    <div class="event-time">Sep 15</div>
+                    <div>Tax Planning Session</div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">📁 Case Files</div>
+                <div class="recent-file" onclick="openFile('harrison-trust-v3')">
+                    <div class="file-icon">PDF</div>
+                    <div class="file-info">
+                        <div class="file-name">Harrison Trust</div>
+                        <div class="file-version">v3 • Sep 1</div>
+                    </div>
+                </div>
+                <div class="recent-file" onclick="openFile('will-draft-v2')">
+                    <div class="file-icon">DOC</div>
+                    <div class="file-info">
+                        <div class="file-name">Will Draft</div>
+                        <div class="file-version">v2 • Aug 30</div>
+                    </div>
+                </div>
+                <div class="recent-file" onclick="openFile('tax-analysis')">
+                    <div class="file-icon">XLS</div>
+                    <div class="file-info">
+                        <div class="file-name">Tax Analysis</div>
+                        <div class="file-version">v1 • Aug 28</div>
+                    </div>
+                </div>
+                <div class="recent-file" onclick="openFile('correspondence')">
+                    <div class="file-icon">EML</div>
+                    <div class="file-info">
+                        <div class="file-name">Client Emails</div>
+                        <div class="file-version">Latest • Aug 25</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-section">
+                <div class="panel-title">📋 Recent Chats</div>
+                <div class="recent-file" onclick="loadChatHistory('estate-planning')">
+                    <div class="file-icon">💬</div>
+                    <div class="file-info">
+                        <div class="file-name">Estate Planning Review</div>
+                        <div class="file-version">2 hours ago</div>
+                    </div>
+                </div>
+                <div class="recent-file" onclick="loadChatHistory('trust-amendments')">
+                    <div class="file-icon">💬</div>
+                    <div class="file-info">
+                        <div class="file-name">Trust Amendments</div>
+                        <div class="file-version">Yesterday</div>
+                    </div>
+                </div>
+                <div class="recent-file" onclick="loadChatHistory('tax-implications')">
+                    <div class="file-icon">💬</div>
+                    <div class="file-info">
+                        <div class="file-name">Tax Implications</div>
+                        <div class="file-version">Aug 30</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drag & Drop Overlay -->
+    <div class="drop-zone" id="drop-zone">
+        📁 Drop files here for instant analysis
+    </div>
+
+    <script>
+        class StreamlinedLegalPlatform {
+            constructor() {
+                this.currentUser = 'travis';
+                this.currentChat = 'main';
+                this.micActive = false;
+                this.recognition = null;
+                this.currentCase = 'Harrison Estate Planning - TRC-2024-0892';
+                
+                this.setupEventListeners();
+                this.setupDragAndDrop();
+                this.setupVoiceRecognition();
+                this.initializeIntegrations();
+                
+                console.log('🚀 ESQs Streamlined Legal Platform Loaded');
+                console.log('📁 F: Drive Exclusive Operation');
+                console.log('🎤 Voice recognition ready');
+                console.log('📄 Drag & drop enabled');
+                console.log('📅 Google Calendar integration ready');
+                console.log('📧 Gmail integration ready');
+            }
+
+            initializeIntegrations() {
+                this.initGoogleCalendar();
+                this.initGmail();
+                this.loadCalendarEvents();
+                this.checkNewEmails();
+            }
+
+            // Google Calendar Integration
+            initGoogleCalendar() {
+                console.log('📅 Initializing Google Calendar integration...');
+                // Load calendar events on startup
+                this.loadCalendarEvents();
+                // Set up periodic refresh every 15 minutes
+                setInterval(() => this.loadCalendarEvents(), 15 * 60 * 1000);
+            }
+
+            async loadCalendarEvents() {
+                try {
+                    const response = await fetch('/api/calendar/events');
+                    const data = await response.json();
+                    this.displayCalendarEvents(data.events);
+                } catch (error) {
+                    console.error('Calendar sync failed:', error);
+                }
+            }
+
+            displayCalendarEvents(events) {
+                // Update upcoming events display
+                const upcomingEvents = document.querySelector('.upcoming-events');
+                if (upcomingEvents && events.length > 0) {
+                    const eventsHtml = events.slice(0, 3).map(event => `
+                        <div class="event-item">
+                            <div class="event-time">${new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                            <div class="event-title">${event.title}</div>
+                            <div class="event-location">${event.location || 'No location'}</div>
+                        </div>
+                    `).join('');
+                    
+                    upcomingEvents.innerHTML = `
+                        <h4>Today's Events</h4>
+                        ${eventsHtml}
+                    `;
+                }
+            }
+
+            async createCalendarEvent(eventData) {
+                try {
+                    const response = await fetch('/api/calendar/create-event', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(eventData)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        this.addAIMessage(`✅ Calendar event "${eventData.title}" created successfully`);
+                        this.loadCalendarEvents(); // Refresh calendar
+                    } else {
+                        this.addAIMessage('❌ Failed to create calendar event');
+                    }
+                } catch (error) {
+                    console.error('Calendar event creation failed:', error);
+                    this.addAIMessage('❌ Calendar integration error');
+                }
+            }
+
+            // Gmail Integration
+            initGmail() {
+                console.log('📧 Initializing Gmail integration...');
+                // Check for new emails every 5 minutes
+                setInterval(() => this.checkNewEmails(), 5 * 60 * 1000);
+            }
+
+            async checkNewEmails() {
+                try {
+                    const response = await fetch('/api/gmail/messages');
+                    const data = await response.json();
+                    const unreadCount = data.messages.filter(msg => msg.unread).length;
+                    
+                    if (unreadCount > 0) {
+                        console.log(`📧 ${unreadCount} new emails`);
+                        // Could show notification in UI
+                    }
+                } catch (error) {
+                    console.error('Gmail check failed:', error);
+                }
+            }
+
+            async sendEmail(emailData) {
+                try {
+                    const response = await fetch('/api/gmail/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(emailData)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        this.addAIMessage(`✅ Email sent to ${emailData.to}`);
+                    } else {
+                        this.addAIMessage('❌ Failed to send email');
+                    }
+                } catch (error) {
+                    console.error('Email sending failed:', error);
+                    this.addAIMessage('❌ Gmail integration error');
+                }
+            }
+
+            async createEmailDraft(draftData) {
+                try {
+                    const response = await fetch('/api/gmail/draft', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(draftData)
+                    });
+                    
+                    const result = await response.json();
+                    if (result.success) {
+                        this.addAIMessage(`✅ Email draft created: "${draftData.subject}"`);
+                    } else {
+                        this.addAIMessage('❌ Failed to create email draft');
+                    }
+                } catch (error) {
+                    console.error('Email draft creation failed:', error);
+                    this.addAIMessage('❌ Gmail integration error');
+                }
+            }
+
+            setupEventListeners() {
+                const chatInput = document.getElementById('chat-input');
+                chatInput.addEventListener('input', this.autoResize);
+            }
+
+            setupDragAndDrop() {
+                const body = document.body;
+                const dropZone = document.getElementById('drop-zone');
+                
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    body.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                });
+
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    body.addEventListener(eventName, () => {
+                        dropZone.classList.add('active');
+                    });
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    body.addEventListener(eventName, () => {
+                        dropZone.classList.remove('active');
+                    });
+                });
+
+                body.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    [...files].forEach(file => this.handleFileUpload(file));
+                });
+            }
+
+            setupVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.processVoiceInput(transcript);
+                    };
+                    
+                    this.recognition.onerror = () => this.stopMic();
+                    this.recognition.onend = () => this.stopMic();
+                }
+            }
+
+            autoResize(e) {
+                e.target.style.height = 'auto';
+                e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+            }
+
+            handleKeyDown(event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    this.sendMessage();
+                }
+            }
+
+            toggleMic() {
+                const micBtn = document.getElementById('mic-btn');
+                
+                if (this.micActive) {
+                    this.stopMic();
+                } else {
+                    this.startMic();
+                }
+            }
+
+            startMic() {
+                if (this.recognition) {
+                    this.micActive = true;
+                    const micBtn = document.getElementById('mic-btn');
+                    micBtn.classList.remove('off');
+                    micBtn.classList.add('on');
+                    this.recognition.start();
+                }
+            }
+
+            stopMic() {
+                if (this.recognition && this.micActive) {
+                    this.micActive = false;
+                    const micBtn = document.getElementById('mic-btn');
+                    micBtn.classList.remove('on');
+                    micBtn.classList.add('off');
+                    this.recognition.stop();
+                }
+            }
+
+            processVoiceInput(transcript) {
+                const chatInput = document.getElementById('chat-input');
+                chatInput.value = transcript;
+                this.sendMessage();
+            }
+
+            sendMessage() {
+                const input = document.getElementById('chat-input');
+                const message = input.value.trim();
+                if (message) {
+                    this.addUserMessage(message);
+                    this.processAIResponse(message);
+                    input.value = '';
+                    input.style.height = 'auto';
+                }
+            }
+
+            addUserMessage(message) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message user';
+                messageDiv.innerHTML = `<strong>${this.getCurrentUserName()}</strong><br>${message}`;
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            addAIMessage(message) {
+                const messagesDiv = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message ai';
+                messageDiv.innerHTML = `<strong>ESQs AI Assistant</strong><br>${message}`;
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            processAIResponse(message) {
+                setTimeout(() => {
+                    let response = '';
+                    const lowerMessage = message.toLowerCase();
+                    
+                    // Calendar commands
+                    if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar event') || lowerMessage.includes('meeting')) {
+                        this.handleCalendarCommand(message);
+                        return;
+                    }
+                    
+                    // Email commands
+                    if (lowerMessage.includes('send email') || lowerMessage.includes('email') || lowerMessage.includes('draft')) {
+                        this.handleEmailCommand(message);
+                        return;
+                    }
+                    
+                    if (lowerMessage.includes('time entry') || lowerMessage.includes('billing')) {
+                        response = `<strong>⏱️ Practice Panther Time Entry</strong><br><br>
+                        Creating time entry for ${this.currentCase}:<br>
+                        • Date: ${new Date().toLocaleDateString()}<br>
+                        • Matter: TRC-2024-0892<br>
+                        • Attorney: ${this.getCurrentUserName()}<br><br>
+                        What task would you like to record time for?`;
+                    } else if (lowerMessage.includes('calendar') || lowerMessage.includes('events')) {
+                        response = `<strong>📅 Calendar Management</strong><br><br>
+                        Available calendar actions:<br>
+                        • "Schedule meeting with client at 2pm tomorrow"<br>
+                        • "Create calendar event for court hearing"<br>
+                        • "Show my calendar for this week"<br><br>
+                        Upcoming events for ${this.currentCase}:<br>
+                        • Sep 5: Trust Review Meeting (Critical)<br>
+                        • Sep 8: Document Filing Deadline (Warning)<br>
+                        • Sep 12: Client Check-in Call`;
+                    } else if (lowerMessage.includes('template') || lowerMessage.includes('document')) {
+                        response = `<strong>📄 Document Templates</strong><br><br>
+                        Available templates for estate planning:<br>
+                        • Trust Amendment Template<br>
+                        • Will Modification Form<br>
+                        • Tax Analysis Worksheet<br>
+                        • Beneficiary Designation Form<br><br>
+                        Which template would you like to use?`;
+                    } else if (lowerMessage.includes('research') || lowerMessage.includes('case law')) {
+                        response = `<strong>📚 Legal Research</strong><br><br>
+                        Researching: "${message}"<br><br>
+                        I can help with:<br>
+                        • Utah estate planning statutes<br>
+                        • Trust administration cases<br>
+                        • Tax code implications<br>
+                        • Recent precedents<br><br>
+                        What specific legal issue should I research?`;
+                    } else {
+                        response = `<strong>🤖 AI Assistant Response</strong><br><br>
+                        Processing: "${message}"<br><br>
+                        I understand you're working on ${this.currentCase}. I have access to all case files, Practice Panther data, document templates, legal research tools, Google Calendar, and Gmail.<br><br>
+                        Available integrations:<br>
+                        📅 Google Calendar - Schedule meetings, set reminders<br>
+                        📧 Gmail - Send emails, create drafts<br>
+                        ⚖️ Practice Panther - Access case data, time entries<br><br>
+                        How can I assist you further?`;
+                    }
+                    
+                    this.addAIMessage(response);
+                }, 1000);
+            }
+
+            handleCalendarCommand(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Extract calendar event details from natural language
+                if (lowerMessage.includes('schedule') || lowerMessage.includes('meeting')) {
+                    this.addAIMessage('📅 Creating calendar event...');
+                    
+                    // Simple parsing - could be enhanced with NLP
+                    const title = this.extractEventTitle(message);
+                    const dateTime = this.extractDateTime(message);
+                    
+                    const eventData = {
+                        title: title || 'Legal Meeting',
+                        start: dateTime.start,
+                        end: dateTime.end,
+                        location: 'Conference Room A',
+                        attendees: ['client@example.com'],
+                        description: `Related to case: ${this.currentCase}`
+                    };
+                    
+                    this.createCalendarEvent(eventData);
+                }
+            }
+
+            handleEmailCommand(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                if (lowerMessage.includes('send email')) {
+                    this.addAIMessage('📧 Preparing email...');
+                    
+                    // Extract email details
+                    const emailData = {
+                        to: 'client@example.com',
+                        subject: `Update on ${this.currentCase}`,
+                        body: this.generateEmailBody(message),
+                        templateType: 'client-update'
+                    };
+                    
+                    if (lowerMessage.includes('draft')) {
+                        this.createEmailDraft(emailData);
+                    } else {
+                        this.sendEmail(emailData);
+                    }
+                }
+            }
+
+            extractEventTitle(message) {
+                // Simple title extraction - could be enhanced
+                if (message.includes('meeting')) return 'Client Meeting';
+                if (message.includes('court')) return 'Court Hearing';
+                if (message.includes('deadline')) return 'Filing Deadline';
+                return 'Legal Event';
+            }
+
+            extractDateTime(message) {
+                // Simple date/time extraction - could be enhanced with proper date parsing
+                const now = new Date();
+                const start = new Date(now.getTime() + 24 * 60 * 60 * 1000); // Tomorrow
+                const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hour later
+                
+                return {
+                    start: start.toISOString(),
+                    end: end.toISOString()
+                };
+            }
+
+            generateEmailBody(message) {
+                return `Dear Client,
+
+I hope this email finds you well. I'm writing to provide you with an update regarding ${this.currentCase}.
+
+${message}
+
+Please don't hesitate to contact me if you have any questions or concerns.
+
+Best regards,
+${this.getCurrentUserName()}
+Boyack Christiansen Legal Solutions`;
+            }
+
+            handleFileUpload(file) {
+                this.addUserMessage(`📎 Uploaded: ${file.name}`);
+                
+                setTimeout(() => {
+                    const version = this.getNextVersion(file.name);
+                    const analysis = `<strong>📄 Document Analysis Complete</strong><br><br>
+                    <strong>File:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${this.formatFileSize(file.size)}<br>
+                    <strong>Type:</strong> ${this.getFileType(file.name)}<br>
+                    <strong>Suggested Version:</strong> ${version}<br><br>
+                    <strong>Quick Actions:</strong><br>
+                    • Save as new version (${version})<br>
+                    • Add to case file<br>
+                    • Extract key information<br>
+                    • Compare with previous version<br><br>
+                    Would you like me to save this as ${version}?`;
+                    
+                    this.addAIMessage(analysis);
+                }, 1500);
+            }
+
+            getNextVersion(filename) {
+                // Extract base name and suggest next version
+                const baseName = filename.split('.')[0];
+                return `${baseName} v${new Date().getMonth() + 1}.${new Date().getDate()}`;
+            }
+
+            getFileType(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const types = {
+                    'pdf': 'PDF Document',
+                    'doc': 'Word Document',
+                    'docx': 'Word Document',
+                    'xls': 'Excel Spreadsheet',
+                    'xlsx': 'Excel Spreadsheet',
+                    'txt': 'Text Document'
+                };
+                return types[ext] || 'Document';
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            getCurrentUserName() {
+                const names = {
+                    travis: 'Travis R. Christiansen',
+                    john: 'John W Adams',
+                    josephine: 'Josephine Millar',
+                    jordan: 'Jordan Gubler',
+                    jessica: 'Jessica Byergo'
+                };
+                return names[this.currentUser] || 'User';
+            }
+
+            switchUser() {
+                const selector = document.querySelector('.user-dropdown');
+                this.currentUser = selector.value;
+                this.updateCaseInfo();
+            }
+
+            updateCaseInfo() {
+                const cases = {
+                    travis: 'Harrison Estate Planning - TRC-2024-0892',
+                    john: 'TechCorp Merger - JWA-2024-0156',
+                    josephine: 'Employment Dispute - JM-2024-0234',
+                    jordan: 'Real Estate Transaction - JG-2024-0078',
+                    jessica: 'IP Patent Filing - JB-2024-0345'
+                };
+                
+                this.currentCase = cases[this.currentUser];
+                document.getElementById('current-case').textContent = this.currentCase;
+            }
+
+            startNewChat() {
+                const messagesDiv = document.getElementById('chat-messages');
+                messagesDiv.innerHTML = `
+                    <div class="message ai">
+                        <strong>ESQs AI Assistant</strong><br><br>
+                        New chat started! I'm ready to help with any legal work.<br><br>
+                        🎤 Voice commands enabled<br>
+                        📁 Drag & drop files for analysis<br>
+                        ⚖️ Full Practice Panther access<br>
+                        📚 Legal research tools ready<br><br>
+                        What can I help you with today?
+                    </div>
+                `;
+            }
+
+            startCaseChat() {
+                this.addAIMessage(`<strong>📋 ${this.currentCase} Chat</strong><br><br>Starting focused chat for this case. I have access to all case files, calendar events, and related documents.<br><br>What would you like to work on?`);
+            }
+
+            switchChat(chatId) {
+                // Update active tab
+                document.querySelectorAll('.chat-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                event.target.classList.add('active');
+                
+                this.currentChat = chatId;
+                
+                // Load chat history (simulated)
+                const messagesDiv = document.getElementById('chat-messages');
+                if (chatId === 'main') {
+                    messagesDiv.innerHTML = `
+                        <div class="message ai">
+                            <strong>ESQs AI Assistant</strong><br><br>
+                            Main chat loaded. How can I help you today?
+                        </div>
+                    `;
+                } else {
+                    messagesDiv.innerHTML = `
+                        <div class="message ai">
+                            <strong>Document Chat: ${chatId}</strong><br><br>
+                            This is the chat history for ${chatId}. Previous conversations about this document are loaded.
+                        </div>
+                    `;
+                }
+            }
+
+            openFile(fileId) {
+                this.addAIMessage(`<strong>📂 Opening ${fileId}</strong><br><br>File loaded successfully. I can now answer questions about this document or help you edit it.<br><br>Would you like me to:<br>• Summarize the content<br>• Find specific information<br>• Suggest edits<br>• Create a new version`);
+            }
+
+            startDocument(docType) {
+                this.addAIMessage(`<strong>📄 Starting ${docType}</strong><br><br>I'll help you create this priority document. Based on the case information, I can auto-populate relevant details and guide you through the process.<br><br>Shall we begin?`);
+            }
+
+            openSettings() {
+                this.addAIMessage(`<strong>⚙️ Settings Panel</strong><br><br>Available customizations:<br>• Interface theme preferences<br>• Voice recognition settings<br>• Default document templates<br>• Calendar integration options<br>• Practice Panther sync settings<br><br>What would you like to customize?`);
+            }
+
+            loadChatHistory(chatId) {
+                this.addAIMessage(`<strong>💬 Loading Chat: ${chatId}</strong><br><br>Previous conversation loaded. You can continue where you left off or start a new discussion about this topic.`);
+            }
+        }
+
+        // Global functions
+        let platform;
+
+        function handleKeyDown(event) { platform.handleKeyDown(event); }
+        function toggleMic() { platform.toggleMic(); }
+        function switchUser() { platform.switchUser(); }
+        function startNewChat() { platform.startNewChat(); }
+        function startCaseChat() { platform.startCaseChat(); }
+        function switchChat(chatId) { platform.switchChat(chatId); }
+        function openFile(fileId) { platform.openFile(fileId); }
+        function startDocument(docType) { platform.startDocument(docType); }
+        function openSettings() { platform.openSettings(); }
+        function loadChatHistory(chatId) { platform.loadChatHistory(chatId); }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            platform = new StreamlinedLegalPlatform();
+            console.log('✅ Streamlined Legal Platform Ready');
+            console.log('🎯 Clean, focused interface');
+            console.log('📁 F: Drive exclusive operation');
+        });
+    </script>
+</body>
+</html>
