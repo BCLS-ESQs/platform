@@ -1,8 +1,13 @@
-const express = require('express');
-const cors = require('cors');
-const fs = require('fs').promises;
-const path = require('path');
-const Database = require('better-sqlite3');
+import express from 'express';
+import cors from 'cors';
+import { promises as fs } from 'fs';
+import path from 'path';
+import Database from 'better-sqlite3';
+import { fileURLToPath } from 'url';
+
+// ES6 module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
@@ -187,7 +192,7 @@ async function getCaseDetails(caseId) {
     });
 }
 
-async function getCaseDocuments(caseId) {
+async function getCaseDocuments() {
     return new Promise((resolve, reject) => {
         db.all("SELECT * FROM files WHERE is_stears_related = 1", (err, rows) => {
             if (err) reject(err);
@@ -238,7 +243,7 @@ async function searchDirectoryRecursive(dirPath, query, results) {
                 await searchDirectoryRecursive(fullPath, query, results);
             }
         }
-    } catch (error) {
+    } catch {
         // Skip directories we can't access
     }
 }
@@ -289,7 +294,7 @@ async function getUserDocuments(userId) {
         }
         
         return documents;
-    } catch (error) {
+    } catch {
         return [];
     }
 }
